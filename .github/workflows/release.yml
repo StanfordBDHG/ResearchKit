@@ -6,8 +6,7 @@ on:
       version:
         description: 'The version number that should be used to tag the release'
         type: string
-        required: false
-        default: '-'
+        required: true
 
 jobs:
   build-xcarchive:
