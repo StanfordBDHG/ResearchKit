@@ -6,12 +6,15 @@ on:
       version:
         description: 'The version number that should be used to tag the release'
         type: string
-        required: true
+        required: false
+        default: '-'
 
 jobs:
   build-xcarchive:
     name: Build XCArchive
     uses: ./.github/workflows/build.yml
+    with:
+      inputs: ${{ inputs.version }}
   create-xcframework:
     name: Build XCFramework
     runs-on: macos-13
