@@ -6,10 +6,9 @@ on:
   workflow_call:
     inputs:
       version:
-        description: 'The version number that should be used to tag the release'
+        description: 'The version number of the framework embedded in the XCArchives'
         type: string
-        required: false
-        default: '-'
+        required: true
 
 jobs:
   build-xcarchive:
