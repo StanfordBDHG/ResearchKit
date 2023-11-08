@@ -25,7 +25,7 @@ on:
 
 jobs:
   build-xcarchive:
-    uses: StanfordBDHG/.github/.github/workflows/archive.yml@feat/add-archive-and-xcframework-template-workflows
+    uses: StanfordBDHG/.github/.github/workflows/archive.yml@v2
     with:
       workspaceFile: 'RKWorkspace.xcworkspace'
       XCArchiveName: 'ResearchKit'
