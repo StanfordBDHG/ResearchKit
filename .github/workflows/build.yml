@@ -33,3 +33,4 @@ jobs:
       version: ${{ inputs.version }}
       configuration: ${{ inputs.configuration || 'Release' }}
       runsonlabels: '["macOS", "self-hosted"]'
+ 
