@@ -26,8 +26,7 @@ jobs:
     uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
     with:
       workspaceFile: 'RKWorkspace.xcworkspace'
-      XCFrameworkName: 'ResearchKit'
-      XCArchiveName: 'ResearchKit'
+      xcFrameworkName: 'ResearchKit'
       scheme: 'ResearchKit'
       version: ${{ inputs.version }}
       configuration: ${{ inputs.configuration || 'Release' }}

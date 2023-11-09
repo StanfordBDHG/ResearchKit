@@ -28,7 +28,7 @@ jobs:
     uses: StanfordBDHG/.github/.github/workflows/archive.yml@v2
     with:
       workspaceFile: 'RKWorkspace.xcworkspace'
-      XCArchiveName: 'ResearchKit'
+      xcArchiveName: 'ResearchKit'
       scheme: 'ResearchKit'
       version: ${{ inputs.version }}
       configuration: ${{ inputs.configuration || 'Release' }}
