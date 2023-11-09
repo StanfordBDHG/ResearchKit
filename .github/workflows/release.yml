@@ -23,7 +23,7 @@ on:
 
 jobs:
   create-xcframework-and-release-workflow:
-    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@feat/add-archive-and-xcframework-template-workflows
+    uses: 'StanfordBDHG/.github/.github/workflows/xcframework.yml@feat/add-archive-and-xcframework-template-workflows'
     with:
       workspaceFile: 'RKWorkspace.xcworkspace'
       xcFrameworkName: 'ResearchKit'
