@@ -15,11 +15,6 @@ on:
         description: 'The version number of the framework embedded in the XCArchives. This version number is also used for the release tag.'
         type: string
         required: true
-      configuration:
-        description: 'The build configuration to use when archiving the scheme, either Debug or Release.'
-        type: string
-        required: false
-        default: 'Release'
 
 jobs:
   create-xcframework-and-release-workflow:
