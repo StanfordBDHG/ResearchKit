@@ -20,13 +20,13 @@ on:
 
 jobs:
   build-xcarchive:
-    uses: StanfordBDHG/.github/.github/workflows/archive.yml@feat/enable-interop-archiving
+    uses: StanfordBDHG/.github/.github/workflows/archive.yml@v2
     strategy:
       matrix:
         include:
           - configuration: Release
             cxxInterop: false
-          - configuration: Debug  # Only able to build with enabled C++ interop in Debug configuration
+          - configuration: Debug  # It's only possible to build ResearchKit with enabled C++ interop in Debug configuration
             cxxInterop: true
     with:
       workspaceFile: RKWorkspace.xcworkspace
