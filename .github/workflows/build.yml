@@ -20,11 +20,22 @@ on:
 
 jobs:
   build-xcarchive:
-    uses: StanfordBDHG/.github/.github/workflows/archive.yml@v2
+    uses: StanfordBDHG/.github/.github/workflows/archive.yml@feat/enable-interop-archiving
     with:
       workspaceFile: RKWorkspace.xcworkspace
       xcArchiveName: ResearchKit
       scheme: ResearchKit
       version: ${{ inputs.version }}
       configuration: Release
+      runsonlabels: '["macOS", "self-hosted"]'
+
+  build-xcarchive-cxx-interop:
+    uses: StanfordBDHG/.github/.github/workflows/archive.yml@feat/enable-interop-archiving
+    with:
+      workspaceFile: RKWorkspace.xcworkspace
+      xcArchiveName: ResearchKit
+      scheme: ResearchKit
+      version: ${{ inputs.version }}
+      configuration: Release
+      cxxInterop: true
       runsonlabels: '["macOS", "self-hosted"]'
