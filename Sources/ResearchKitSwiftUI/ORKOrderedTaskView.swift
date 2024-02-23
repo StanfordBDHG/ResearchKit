@@ -51,7 +51,7 @@ public enum TaskResult {
 ///         ORKOrderedTaskView(tasks: trailMarkingTask) { result in
 ///             guard case let .completed(taskResult) = result else {
 ///                 return // user cancelled or task failed
-///         }
+///             }
 ///
 ///             // store your result ...
 ///         }
