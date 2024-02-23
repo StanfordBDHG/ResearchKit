@@ -117,7 +117,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
     ///   - tintColor: The tint color to use with ResearchKit views.
     ///   - shouldConfirmCancel: Specifies the behavior of the "Cancel" button if it should ask for confirmation.
     ///   - result: A closure receiving the ``TaskResult`` for the task view.
-    init(
+    public init(
         tasks: ORKOrderedTask,
         tintColor: Color = Color(UIColor(named: "AccentColor") ?? .systemBlue),
         shouldConfirmCancel: Bool = true,
