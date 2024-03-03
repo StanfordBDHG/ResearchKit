@@ -63,8 +63,6 @@ public enum TaskResult {
 ///     You can check the results of a `taskResult` if it contains an object of type `ORKFileResult` and save its corresponding content.
 ///     After your async closure returns the temporary directory will be automatically deleted otherwise.
 public struct ORKOrderedTaskView: UIViewControllerRepresentable {
-    private static let logger = Logger(subsystem: "edu.stanford.spezi.researchkit", category: "ORKOrderedTaskView")
-
     public class Coordinator: NSObject, ORKTaskViewControllerDelegate {
         fileprivate var result: @MainActor (TaskResult) async -> Void
         fileprivate var shouldConfirmCancel: Bool
@@ -116,6 +114,10 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
             }
         }
     }
+
+    
+    private static let logger = Logger(subsystem: "edu.stanford.spezi.researchkit", category: "ORKOrderedTaskView")
+
 
     private let taskId: UUID
     private let tasks: ORKOrderedTask
@@ -183,4 +185,3 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
         return viewController
     }
 }
-
