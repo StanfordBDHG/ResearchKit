@@ -58,7 +58,13 @@ public enum TaskResult {
 ///     }
 /// }
 /// ```
+///
+/// - Tip: The `ORKOrderedTaskView` automatically creates a temporary output directory for active tasks that provide results as a file.
+///     You can check the results of a `taskResult` if it contains an object of type `ORKFileResult` and save its corresponding content.
+///     After your async closure returns the temporary directory will be automatically deleted otherwise.
 public struct ORKOrderedTaskView: UIViewControllerRepresentable {
+    private static let logger = Logger(subsystem: "edu.stanford.spezi.researchkit", category: "ORKOrderedTaskView")
+
     public class Coordinator: NSObject, ORKTaskViewControllerDelegate {
         fileprivate var result: @MainActor (TaskResult) async -> Void
         fileprivate var shouldConfirmCancel: Bool
@@ -99,15 +105,40 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
                 @unknown default:
                     break
                 }
+
+                if let outputDirectory = taskViewController.outputDirectory {
+                    do {
+                        try FileManager.default.removeItem(at: outputDirectory)
+                    } catch {
+                        logger.error("Failed to delete the temporary output directory: \(error)")
+                    }
+                }
             }
         }
     }
 
+    private let taskId: UUID
     private let tasks: ORKOrderedTask
     private let tintColor: Color
     private let shouldConfirmCancel: Bool
 
     private let result: @MainActor (TaskResult) async -> Void
+
+
+    private var outputDirectory: URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("edu.stanford.spezi.researchkit-task-\(taskId.uuidString)")
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            do {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            } catch {
+                ORKOrderedTaskView.logger.error("Failed to create the temporary output directory: \(error)")
+            }
+        }
+
+        return directory
+    }
 
 
     /// Create a new `ORKOrderedTaskView`.
@@ -123,6 +154,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
         shouldConfirmCancel: Bool = true,
         result: @escaping @MainActor (TaskResult) async -> Void
     ) {
+        self.taskId = UUID()
         self.tasks = tasks
         self.tintColor = tintColor
         self.shouldConfirmCancel = shouldConfirmCancel
@@ -144,9 +176,10 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
 
     public func makeUIViewController(context: Context) -> ORKTaskViewController {
         // Create a new instance of the view controller and pass in the assigned delegate.
-        let viewController = ORKTaskViewController(task: tasks, taskRun: nil)
+        let viewController = ORKTaskViewController(task: tasks, taskRun: taskId)
         viewController.view.tintColor = UIColor(tintColor)
         viewController.delegate = context.coordinator
+        viewController.outputDirectory = outputDirectory
         return viewController
     }
 }
