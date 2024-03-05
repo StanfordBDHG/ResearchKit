@@ -6,16 +6,41 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import ResearchKit
 import ResearchKitSwiftUI
+import SwiftUI
 
 
 struct ORKOrderedTaskViewTests: View {
+    private let task: ORKOrderedTask
+    private let result: @MainActor (ORKTaskResult) async -> Void
+
     @Environment(\.dismiss)
     var dismiss
 
-    var trailMarkingTask: ORKOrderedTask {
+
+    var body: some View {
+        ORKOrderedTaskView(tasks: task) { result in
+            dismiss()
+
+            guard case let .completed(taskResult) = result else {
+                return // user cancelled or error
+            }
+
+            await self.result(taskResult)
+        }
+    }
+
+
+    init(task: ORKOrderedTask, result: @escaping @MainActor (ORKTaskResult) async -> Void) {
+        self.task = task
+        self.result = result
+    }
+}
+
+
+extension ORKOrderedTask {
+    static var trailMarkingTestTask: ORKOrderedTask {
         .trailmakingTask(
             withIdentifier: "your-trailmaking-task-id",
             intendedUseDescription: "Tests visual attention and task switching",
@@ -25,7 +50,7 @@ struct ORKOrderedTaskViewTests: View {
         )
     }
 
-    var stroopTask: ORKOrderedTask {
+    static var stroopTestTask: ORKOrderedTask {
         .stroopTask(
             withIdentifier: "StroopTask",
             intendedUseDescription: "Tests selective attention capacity and processing speed",
@@ -33,19 +58,10 @@ struct ORKOrderedTaskViewTests: View {
             options: [.excludeAudio]
         )
     }
-
-    var body: some View {
-        ORKOrderedTaskView(tasks: stroopTask, tintColor: .accentColor) { result in
-            // TODO: do something with the result?
-            dismiss()
-
-            // TODO: pass the result to the latest main view?
-        }
-    }
 }
 
 
 #Preview {
-    // TODO: preview!
-    ORKOrderedTaskViewTests()
+    ORKOrderedTaskViewTests(task: .stroopTestTask) { _ in
+    }
 }

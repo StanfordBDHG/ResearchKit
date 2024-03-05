@@ -6,24 +6,37 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import ResearchKit
 import ResearchKitSwiftUI
+import SwiftUI
 
 
 @main
 struct UITestsApp: App {
-    @State private var showTask = false
+    @State private var showStroop = false
+    @State private var showTrailMarking = false
 
+    
     var body: some Scene {
         WindowGroup {
-            List {
-                Button("Show Task") {
-                    showTask = true
+            NavigationStack {
+                List {
+                    Button("Show Stroop") {
+                        showStroop = true
+                    }
+                    Button("Show Trail Marking") {
+                        showTrailMarking = true
+                    }
                 }
+                .navigationTitle("ResearchKit")
             }
-                .sheet(isPresented: $showTask) {
-                    ORKOrderedTaskViewTests()
+                .sheet(isPresented: $showStroop) {
+                    ORKOrderedTaskViewTests(task: .stroopTestTask) { _ in
+                    }
+                }
+                .sheet(isPresented: $showTrailMarking) {
+                    ORKOrderedTaskViewTests(task: .trailMarkingTestTask) { _ in
+                    }
                 }
         }
     }

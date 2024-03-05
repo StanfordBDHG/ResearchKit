@@ -81,7 +81,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
         }
 
         public func taskViewControllerSupportsSaveAndRestore(_ taskViewController: ORKTaskViewController) -> Bool {
-            false // TODO: support that eventually?
+            false
         }
 
         public func taskViewController(
