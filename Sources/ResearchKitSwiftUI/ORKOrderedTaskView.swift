@@ -80,6 +80,10 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
             shouldConfirmCancel
         }
 
+        public func taskViewControllerSupportsSaveAndRestore(_ taskViewController: ORKTaskViewController) -> Bool {
+            false // TODO: support that eventually?
+        }
+
         public func taskViewController(
             _ taskViewController: ORKTaskViewController,
             didFinishWith reason: ORKTaskViewControllerFinishReason,
