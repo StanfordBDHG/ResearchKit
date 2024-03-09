@@ -153,7 +153,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
     public init(
         tasks: ORKOrderedTask,
         tintColor: Color = Color(UIColor(named: "AccentColor") ?? .systemBlue),
-        shouldConfirmCancel: Bool = true,
+        shouldConfirmCancel: Bool,
         result: @escaping @MainActor (TaskResult) async -> Void
     ) {
         self.init(
