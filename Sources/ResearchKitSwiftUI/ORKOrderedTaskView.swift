@@ -69,7 +69,10 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
             cancelBehavior == .shouldConfirmCancel
         }
         
-        public func taskViewController(_ taskViewController: ORKTaskViewController, stepViewControllerWillAppear stepViewController: ORKStepViewController) {
+        public func taskViewController(
+            _ taskViewController: ORKTaskViewController,
+            stepViewControllerWillAppear stepViewController: ORKStepViewController
+        ) {
             if cancelBehavior == .disabled {
                 stepViewController.cancelButtonItem = nil
             }
@@ -150,7 +153,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
     ///   - shouldConfirmCancel: Specifies the behavior of the "Cancel" button if it should ask for confirmation. The button is always presented.
     ///   - result: A closure receiving the ``TaskResult`` for the task view.
     @available(*, deprecated, message: "Use init(tasks:tintColor:cancelBehavior:result:) instead")
-    public init(
+    public init( // swiftlint:disable:this function_default_parameter_at_end
         tasks: ORKOrderedTask,
         tintColor: Color = Color(UIColor(named: "AccentColor") ?? .systemBlue),
         shouldConfirmCancel: Bool,
