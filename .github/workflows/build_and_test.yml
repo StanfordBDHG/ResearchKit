@@ -30,7 +30,6 @@ jobs:
       configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
-      user: PaulsAutomationBot
   ios:
     name: Build and Test iOS
     uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
