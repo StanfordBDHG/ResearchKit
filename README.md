@@ -4,7 +4,7 @@ ResearchKit Framework
 > [!NOTE]  
 > This repository is a [StanfordBDHG](https://github.com/StanfordBDHG) fork of the [ResearchKit project](https://github.com/ResearchKit/ResearchKit) by Apple, adding support for:
 > - The [Swift Package Manager](https://www.swift.org/documentation/package-manager/) by building ResearchKit to an [XCFramework](https://developer.apple.com/documentation/xcode/creating-a-multi-platform-binary-framework-bundle) via GitHub Actions and exposing the built XCFramework as a SPM binary target to speed up build times of projects / packages consuming our ResearchKit fork.
-> - SwiftUI support to easily interact with the `ORKTaskViewController` using the `ORKOrderedTaskView`.
+> - SwiftUI support to easily interact with the `ORKTaskViewController` using the [`ORKOrderedTaskView`](https://swiftpackageindex.com/stanfordbdhg/researchkit/documentation/researchkitswiftui/orkorderedtaskview).
 > - Building ResearchKit with enabled [Swift's C++ Interoperability](https://www.swift.org/documentation/cxx-interop/), requiring minor code adjustments (not additive) to the ResearchKit codebase.
 > - Building ResearchKit natively on [visionOS to run on Apple Vision Pro](https://developer.apple.com/visionos/).
 
