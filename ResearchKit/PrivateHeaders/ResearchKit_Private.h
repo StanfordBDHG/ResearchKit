@@ -183,3 +183,8 @@
 
 #import <ResearchKit/ORKLearnMoreView.h>
 #import <ResearchKit/ORKBodyContainerView.h>
+
+
+// Manual additions
+#import <ResearchKit/ORKAnswerFormat_Internal.h>
+#import <ResearchKit/ORKFormStep_Internal.h>
