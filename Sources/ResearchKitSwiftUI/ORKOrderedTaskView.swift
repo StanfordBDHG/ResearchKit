@@ -58,6 +58,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
 
         fileprivate var stepWillAppear: ((ORKTaskViewController, ORKStepViewController) -> Void)?
         fileprivate var stepWillDisappear: ((ORKTaskViewController, ORKStepViewController, ORKStepViewControllerNavigationDirection) -> Void)?
+        fileprivate var shouldPresentStep: ((ORKTaskViewController, ORKStep) -> Bool)?
 
 
         init(
@@ -128,6 +129,10 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
                 }
             }
         }
+
+        public func taskViewController(_ taskViewController: ORKTaskViewController, shouldPresent step: ORKStep) -> Bool {
+            return shouldPresentStep?(taskViewController, step) ?? true
+        }
     }
 
     
@@ -146,6 +151,8 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
     private var onStepWillAppear
     @Environment(\.onStepWillDisappear)
     private var onStepWillDisappear
+    @Environment(\.shouldPresentStep)
+    private var shouldPresentStep
 
 
     private var outputDirectory: URL {
@@ -209,8 +216,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
 
     public func makeCoordinator() -> Coordinator {
         let coordinator = Coordinator(result: result, cancelBehavior: cancelBehavior)
-        coordinator.stepWillAppear = onStepWillAppear
-        coordinator.stepWillDisappear = onStepWillDisappear
+        updateClosures(for: coordinator)
         return coordinator
     }
 
@@ -220,8 +226,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
 
         context.coordinator.result = result
         context.coordinator.cancelBehavior = cancelBehavior
-        context.coordinator.stepWillAppear = onStepWillAppear
-        context.coordinator.stepWillDisappear = onStepWillDisappear
+        updateClosures(for: context.coordinator)
     }
 
     public func makeUIViewController(context: Context) -> ORKTaskViewController {
@@ -231,5 +236,11 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
         viewController.delegate = context.coordinator
         viewController.outputDirectory = outputDirectory
         return viewController
+    }
+
+    private func updateClosures(for coordinator: Coordinator) {
+        coordinator.stepWillAppear = onStepWillAppear
+        coordinator.stepWillDisappear = onStepWillDisappear
+        coordinator.shouldPresentStep = shouldPresentStep
     }
 }
