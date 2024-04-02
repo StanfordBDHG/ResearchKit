@@ -131,7 +131,7 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
         }
 
         public func taskViewController(_ taskViewController: ORKTaskViewController, shouldPresent step: ORKStep) -> Bool {
-            return shouldPresentStep?(taskViewController, step) ?? true
+            shouldPresentStep?(taskViewController, step) ?? true
         }
     }
 

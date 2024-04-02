@@ -9,6 +9,8 @@
 import ResearchKit
 import SwiftUI
 
+// swiftlint:disable file_types_order
+
 
 private struct ORKWillAppearMethod: EnvironmentKey {
     static let defaultValue: ((ORKTaskViewController, ORKStepViewController) -> Void)? = nil
@@ -97,7 +99,7 @@ extension View {
     /// of the underlying `ORKTaskViewControllerDelegate` to the SwiftUI environment.
     /// - Parameter predicate: The closure to be executed to determine if the next step should be presented.
     /// - Returns: The modified view.
-    @_spi(ORK) // TODO: docs!
+    @_spi(ORK)
     public func shouldPresentStep(predicate: @escaping (ORKTaskViewController, ORKStep) -> Bool) -> some View {
         environment(\.shouldPresentStep, predicate)
     }
