@@ -28,7 +28,6 @@ jobs:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ${{ matrix.framework }}
       scheme: ${{ matrix.framework }}
-      configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
   create-xcframework-researchkit-active-tasks:
@@ -38,7 +37,6 @@ jobs:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ResearchKitActiveTask
       scheme: ResearchKitActiveTask
-      configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator"]'
   commit-and-release-xcframeworks:
