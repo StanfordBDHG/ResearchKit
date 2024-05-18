@@ -21,9 +21,9 @@ on:
         required: true
 
 jobs:
-  create-xcframework-and-release-workflow-researchkit:
+  create-xcframework-researchkit:
     name: XCFramework
-    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@xcframeworks
     strategy:
       matrix:
         framework: [ResearchKit, ResearchKitUI]
@@ -35,13 +35,9 @@ jobs:
       configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
-      outputpath: './Sources'
-      user: PaulsAutomationBot
-    secrets:
-      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-  create-xcframework-and-release-workflow-researchkit-active-tasks:
+  create-xcframework-researchkit-active-tasks:
     name: XCFramework (ResearchKitActiveTask)
-    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@xcframeworks
     with:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ResearchKitActiveTask
@@ -49,7 +45,12 @@ jobs:
       version: ${{ inputs.version }}
       configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
-      sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
+      sdk: '["iphoneos", "iphonesimulator"]'
+  commit-and-release-xcframeworks:
+    name: Commit and Release XCFrameworks
+    needs: [create-xcframework-researchkit, create-xcframework-researchkit-active-tasks]
+    uses: StanfordBDHG/.github/.github/workflows/xcframework-commit-and-release.yml@xcframeworks
+    with:
       outputpath: './Sources'
       user: PaulsAutomationBot
     secrets:
