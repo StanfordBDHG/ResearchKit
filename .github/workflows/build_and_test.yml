@@ -16,11 +16,6 @@ on:
   pull_request:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      version:
-        description: 'The version number of the framework embedded in the XCArchives & XCFrameworks.'
-        type: string
-        required: true
 
 jobs:
   create-xcframework-researchkit:
@@ -33,7 +28,6 @@ jobs:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ${{ matrix.framework }}
       scheme: ${{ matrix.framework }}
-      version: ${{ inputs.version }}
       configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
@@ -44,7 +38,6 @@ jobs:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ResearchKitActiveTask
       scheme: ResearchKitActiveTask
-      version: ${{ inputs.version }}
       configuration: Release
       runsonlabels: '["macOS", "self-hosted"]'
       sdk: '["iphoneos", "iphonesimulator"]'
