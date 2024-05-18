@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version number of the framework embedded in the XCArchives. This version number is also used for the release tag.'
+        description: 'The version number of the framework embedded in the XCArchives & XCFrameworks. This version number is also used for the release tag.'
         type: string
         required: true
 
