@@ -23,7 +23,7 @@ on:
 jobs:
   create-xcframework-researchkit:
     name: XCFramework
-    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@xcframeworks
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
     strategy:
       matrix:
         framework: [ResearchKit, ResearchKitUI]
@@ -37,7 +37,7 @@ jobs:
       sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
   create-xcframework-researchkit-active-tasks:
     name: XCFramework (ResearchKitActiveTask)
-    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@xcframeworks
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
     with:
       workspaceFile: RKWorkspace.xcworkspace
       xcFrameworkName: ResearchKitActiveTask
@@ -49,7 +49,7 @@ jobs:
   commit-and-release-xcframeworks:
     name: Commit and Release XCFrameworks
     needs: [create-xcframework-researchkit, create-xcframework-researchkit-active-tasks]
-    uses: StanfordBDHG/.github/.github/workflows/xcframework-commit-and-release.yml@xcframeworks
+    uses: StanfordBDHG/.github/.github/workflows/xcframework-commit-and-release.yml@v2
     with:
       outputpath: './Sources'
       user: PaulsAutomationBot
