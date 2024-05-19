@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-name: Build XCArchive
+name: Build and Test
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
