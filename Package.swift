@@ -40,6 +40,9 @@ let package = Package(
         ),
         .target(
             name: "ResearchKitSwiftUI",
+            dependencies: [
+                .target(name: "ResearchKit")
+            ],
             path: "ResearchKitSwiftUI"
             //swiftSettings: [
             //   swiftConcurrency
