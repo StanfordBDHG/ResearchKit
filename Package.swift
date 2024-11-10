@@ -1,4 +1,4 @@
-// swift-tools-version:5.10.0
+// swift-tools-version: 6.0
 
 import class Foundation.ProcessInfo
 import PackageDescription
@@ -15,7 +15,7 @@ let package = Package(
     name: "ResearchKit",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v17),
+        .iOS(.v18),
         .visionOS(.v1)
     ],
     products: [
