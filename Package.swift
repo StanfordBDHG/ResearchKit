@@ -1,4 +1,4 @@
-// swift-tools-version:6.0.0
+// swift-tools-version:5.10.0
 
 import class Foundation.ProcessInfo
 import PackageDescription
@@ -15,7 +15,7 @@ let package = Package(
     name: "ResearchKit",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v18),
+        .iOS(.v17),
         .visionOS(.v1)
     ],
     products: [
@@ -46,9 +46,9 @@ let package = Package(
                 .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
             ],
             path: "ResearchKitSwiftUI",
-            swiftSettings: [
-                swiftConcurrency
-            ],
+            //swiftSettings: [
+            //    swiftConcurrency
+            //],
             plugins: [] + swiftLintPlugin()
         )
         // .target(
