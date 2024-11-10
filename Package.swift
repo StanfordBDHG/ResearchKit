@@ -39,6 +39,7 @@ let package = Package(
         ),
         .target(
             name: "ResearchKitSwiftUI",
+            path: "ResearchKitSwiftUI",
             dependencies: [
                 .target(name: "ResearchKit"),
                 .target(name: "ResearchKitUI"),
@@ -49,6 +50,18 @@ let package = Package(
             ],
             plugins: [] + swiftLintPlugin()
         )
+        // .target(
+        //     name: "ResearchKitSwiftUI",
+        //     dependencies: [
+        //         .target(name: "ResearchKit"),
+        //         .target(name: "ResearchKitUI"),
+        //         .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
+        //     ],
+        //     swiftSettings: [
+        //         swiftConcurrency
+        //     ],
+        //     plugins: [] + swiftLintPlugin()
+        // )
     ]
 )
 
