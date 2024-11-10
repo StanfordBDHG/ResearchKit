@@ -72,7 +72,7 @@ public struct InstructionBodyItem: View {
 
 struct QuestionCardPreferenceKey: PreferenceKey {
 
-    static var defaultValue = true
+    static let defaultValue = true
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = nextValue()

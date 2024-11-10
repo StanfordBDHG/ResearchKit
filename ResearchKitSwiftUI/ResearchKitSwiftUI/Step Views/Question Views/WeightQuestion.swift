@@ -37,7 +37,7 @@ public enum NumericPrecision {
 
 private class WeightFormatter {
 
-    static let shared = WeightFormatter()
+    @MainActor static let shared = WeightFormatter()
 
     private let weightFormatter: NumberFormatter
 

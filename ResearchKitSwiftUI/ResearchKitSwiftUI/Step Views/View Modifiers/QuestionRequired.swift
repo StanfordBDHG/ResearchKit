@@ -44,7 +44,7 @@ extension View {
 }
 
 struct QuestionRequiredPreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
+    static let defaultValue: Bool = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = nextValue()
@@ -52,7 +52,7 @@ struct QuestionRequiredPreferenceKey: PreferenceKey {
 }
 
 struct QuestionAnsweredPreferenceKey: PreferenceKey {
-    static var defaultValue = false
+    static let defaultValue = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = nextValue()
@@ -60,7 +60,7 @@ struct QuestionAnsweredPreferenceKey: PreferenceKey {
 }
 
 struct StepCompletedPreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
+    static let defaultValue: Bool = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = nextValue()
