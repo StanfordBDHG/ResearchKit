@@ -13,6 +13,7 @@ let swiftConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
 
 let package = Package(
     name: "ResearchKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .visionOS(.v1)
