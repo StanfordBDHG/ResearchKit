@@ -24,7 +24,7 @@ let package = Package(
         .library(name: "ResearchKitActiveTask", targets: ["ResearchKitActiveTask"]),
         .library(name: "ResearchKitSwiftUI", targets: ["ResearchKitSwiftUI"])
     ],
-    dependencies: [.package(url: "https://github.com/apple/swift-testing.git", from: "0.3.0")] + swiftLintPackage(),
+    dependencies: [.package(url: "https://github.com/apple/swift-testing.git", from: "6.0.1")] + swiftLintPackage(),
     targets: [
         .binaryTarget(
             name: "ResearchKit",
