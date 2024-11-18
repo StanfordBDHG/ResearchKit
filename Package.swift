@@ -15,7 +15,7 @@ let package = Package(
     name: "ResearchKit",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v18),
+        .iOS(.v17),
         .visionOS(.v1)
     ],
     products: [
@@ -41,22 +41,15 @@ let package = Package(
         .target(
             name: "ResearchKitSwiftUI",
             dependencies: [
-                .target(name: "ResearchKit")
+                .target(name: "ResearchKit"),
+                .target(name: "ResearchKitUI"),
+                .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
             ],
-            path: "ResearchKitSwiftUI"
+            swiftSettings: [
+                swiftConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         )
-        // .target(
-        //     name: "ResearchKitSwiftUI",
-        //     dependencies: [
-        //         .target(name: "ResearchKit"),
-        //         .target(name: "ResearchKitUI"),
-        //         .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
-        //     ],
-        //     swiftSettings: [
-        //         swiftConcurrency
-        //     ],
-        //     plugins: [] + swiftLintPlugin()
-        // )
     ]
 )
 
