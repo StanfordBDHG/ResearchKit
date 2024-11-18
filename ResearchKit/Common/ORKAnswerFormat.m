@@ -488,7 +488,7 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
                                                        defaultValue:defaultValue];
 }
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS && !TARGET_OS_VISION
 + (ORKLocationAnswerFormat *)locationAnswerFormat {
     return [ORKLocationAnswerFormat new];
 }
@@ -498,14 +498,6 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
                                                                       bottomRungText:(NSString *)bottomRungText {
     return [[ORKSESAnswerFormat alloc] initWithTopRungText:topRungText
                                                                 bottomRungText:bottomRungText];
-}
-
-#endif
-
-#if !TARGET_OS_VISION
-
-+ (ORKLocationAnswerFormat *)locationAnswerFormat {
-    return [ORKLocationAnswerFormat new];
 }
 
 #endif
