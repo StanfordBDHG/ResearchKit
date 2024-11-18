@@ -248,3 +248,4 @@ static NSUInteger const QueryLimitSize = 1000;
 
 @end
 #endif
+#endif
