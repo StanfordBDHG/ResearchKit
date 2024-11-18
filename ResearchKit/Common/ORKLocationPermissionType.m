@@ -121,3 +121,4 @@ static const uint32_t IconDarkTintColor = 0x00A36C;
 
 @end
 #endif
+#endif
