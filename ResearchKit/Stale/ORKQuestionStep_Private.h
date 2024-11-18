@@ -34,6 +34,7 @@
 #import <ResearchKit/ORKQuestionStep.h>
 #import <ResearchKit/ORKAnswerFormat_Private.h>
 #import <ResearchKit/ORKQuestionStep.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
