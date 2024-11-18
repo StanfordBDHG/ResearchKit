@@ -44,10 +44,6 @@ let package = Package(
                 .target(name: "ResearchKit")
             ],
             path: "ResearchKitSwiftUI"
-            //swiftSettings: [
-            //   swiftConcurrency
-            //],
-            // plugins: [] + swiftLintPlugin()
         )
         // .target(
         //     name: "ResearchKitSwiftUI",
