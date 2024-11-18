@@ -4092,6 +4092,7 @@ static const NSInteger ORKAgeAnswerDefaultMaxAge = 125;
 
 @end
 #endif
+#endif
 
 #pragma mark ORKSESAnswerFormat
 
