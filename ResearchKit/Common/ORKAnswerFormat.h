@@ -55,6 +55,7 @@
 @class ORKLocationAnswerFormat;
 @class ORKSESAnswerFormat;
 @class ORKImageChoice;
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -437,7 +438,6 @@ ORK_CLASS_AVAILABLE
 
 @end
 
-#if TARGET_OS_IOS || TARGET_OS_VISION
 @interface ORKAnswerFormat()
 
 /// @name Factory methods

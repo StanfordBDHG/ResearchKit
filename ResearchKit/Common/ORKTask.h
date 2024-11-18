@@ -33,7 +33,7 @@
 
 #if ORK_FEATURE_HEALTHKIT_AUTHORIZATION
 #import <HealthKit/HealthKit.h>
-
+#endif
 
 #if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKTypes.h>

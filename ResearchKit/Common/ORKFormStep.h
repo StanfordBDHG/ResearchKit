@@ -36,6 +36,7 @@
 #import <ResearchKit/ORKStep.h>
 #import <ResearchKit/ORKDefines.h>
 #import <ResearchKit/ORKStep.h>
+#endif
 
 /**
  Values that determine the style

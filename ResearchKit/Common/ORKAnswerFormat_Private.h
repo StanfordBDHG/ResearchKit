@@ -32,6 +32,7 @@
 
 #if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKAnswerFormat.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -93,6 +94,7 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, copy, readonly) NSString *errorMessage;
 
 @end
+#endif
 
 @protocol ORKAnswerFormatPlatterPresentable <NSObject>
 
