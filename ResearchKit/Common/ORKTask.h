@@ -39,8 +39,6 @@
 #import <ResearchKit/ORKTypes.h>
 #endif
 
-#import <ResearchKit/ORKTypes.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 @class ORKStep;
