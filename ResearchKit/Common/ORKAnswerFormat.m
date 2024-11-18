@@ -94,7 +94,6 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
     return style == ORKNumberFormattingStylePercent ? NSNumberFormatterPercentStyle : NSNumberFormatterDecimalStyle;
 }
 
-#if TARGET_OS_IOS
 @implementation ORKAnswerDefaultSource {
     NSMutableDictionary *_unitsTable;
 }
@@ -1036,6 +1035,7 @@ static NSArray *ork_processTextChoices(NSArray<ORKTextChoice *> *textChoices) {
 }
 
 @end
+#endif
 
 #pragma mark - ORKTextChoiceAnswerFormat
 
@@ -1611,6 +1611,7 @@ NSArray<Class> *ORKAllowableValueClasses(void) {
 }
 
 @end
+#endif
 
 
 #pragma mark - ORKImageChoice
@@ -3044,6 +3045,7 @@ NSArray<Class> *ORKAllowableValueClasses(void) {
 
 @end
 
+#endif
 
 #pragma mark - ORKTextAnswerFormat
 
