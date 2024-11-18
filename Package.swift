@@ -53,9 +53,6 @@ let package = Package(
                  .target(name: "ResearchKitUI"),
                  .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
              ],
-             swiftSettings: [
-                 swiftConcurrency
-             ],
              plugins: [] + swiftLintPlugin()
         )
     ]
