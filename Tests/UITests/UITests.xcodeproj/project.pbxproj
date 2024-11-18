@@ -10,7 +10,7 @@
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2F8A431329130A8C005D2B8F /* ORKOrderedTaskViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F8A431229130A8C005D2B8F /* ORKOrderedTaskViewTests.swift */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
-		A907631E2B9528C2009E9BC5 /* ResearchKitSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A907631D2B9528C2009E9BC5 /* ResearchKitSwiftUI */; };
+		56ACAEAF2CEB815E0032EA09 /* ResearchKitSwiftUIBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 56ACAEAE2CEB815E0032EA09 /* ResearchKitSwiftUIBridge */; };
 		A90763222B952B55009E9BC5 /* ORKOrderedTaskViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90763212B952B55009E9BC5 /* ORKOrderedTaskViewTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A907631E2B9528C2009E9BC5 /* ResearchKitSwiftUI in Frameworks */,
+				56ACAEAF2CEB815E0032EA09 /* ResearchKitSwiftUIBridge in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +131,7 @@
 			);
 			name = TestApp;
 			packageProductDependencies = (
-				A907631D2B9528C2009E9BC5 /* ResearchKitSwiftUI */,
+				56ACAEAE2CEB815E0032EA09 /* ResearchKitSwiftUIBridge */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -658,9 +658,9 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A907631D2B9528C2009E9BC5 /* ResearchKitSwiftUI */ = {
+		56ACAEAE2CEB815E0032EA09 /* ResearchKitSwiftUIBridge */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = ResearchKitSwiftUI;
+			productName = ResearchKitSwiftUIBridge;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
