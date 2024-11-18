@@ -34,8 +34,6 @@
 #if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKSkin.h>
 
-#if TARGET_OS_IOS || TARGET_OS_VISION
-
 UIFont *ORKDefaultFontForStyle(UIFontTextStyle style, CGFloat sizeAdjustment);
 CGFloat ORKDefaultFontSizeForStyle(UIFontTextStyle style, CGFloat sizeAdjustment);
 
