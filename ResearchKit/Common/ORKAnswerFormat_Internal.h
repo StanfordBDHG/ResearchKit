@@ -34,10 +34,9 @@
 #endif
 
 #if TARGET_OS_IOS || TARGET_OS_VISION
-
 #import <ResearchKit/ORKAnswerFormat_Private.h>
 #import <ResearchKit/ORKChoiceAnswerFormatHelper.h>
-
+#endif
 @class ORKChoiceAnswerFormatHelper;
 
 NS_ASSUME_NONNULL_BEGIN
