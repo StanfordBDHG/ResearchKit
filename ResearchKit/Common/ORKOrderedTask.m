@@ -46,8 +46,6 @@
 #import "ORKSkin.h"
 #import "ORKStep_Private.h"
 
-
-#if TARGET_OS_IOS
 #import "ORKActiveStep_Internal.h"
 #import "ORKEarlyTerminationConfiguration.h"
 #endif
@@ -285,6 +283,7 @@
             }
             totalQuestions += 1;
         }
+#endif
     }
     
     totalProgress.currentStepStartingProgressPosition = currentStepStartingProgressNumber;
