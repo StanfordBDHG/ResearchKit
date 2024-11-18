@@ -1,4 +1,4 @@
-# ``ResearchKitSwiftUI``
+# ``ResearchKitSwiftUIBridge``
 
 Additional support when using ResearchKit with SwiftUI.
 

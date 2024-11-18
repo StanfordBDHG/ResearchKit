@@ -22,7 +22,7 @@ import SwiftUI
 ///
 /// ```swift
 /// import ResearchKit
-/// import ResearchKitSwiftUI
+/// import ResearchKitSwiftUIBridge
 ///
 ///
 /// struct TrailMakingTask: View {

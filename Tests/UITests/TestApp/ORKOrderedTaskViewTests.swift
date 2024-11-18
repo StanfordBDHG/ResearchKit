@@ -7,7 +7,7 @@
 //
 
 import ResearchKit
-import ResearchKitSwiftUI
+import ResearchKitSwiftUIBridge
 import SwiftUI
 
 
