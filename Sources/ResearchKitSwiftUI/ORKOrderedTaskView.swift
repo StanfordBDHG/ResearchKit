@@ -190,9 +190,9 @@ public struct ORKOrderedTaskView: UIViewControllerRepresentable {
     ///   - shouldConfirmCancel: Specifies the behavior of the "Cancel" button if it should ask for confirmation. The button is always presented.
     ///   - result: A closure receiving the ``TaskResult`` for the task view.
     @available(*, deprecated, message: "Use init(tasks:tintColor:cancelBehavior:result:) instead")
-    public init( // swiftlint:disable:this function_default_parameter_at_end
+    public init(
         tasks: ORKOrderedTask,
-        tintColor: Color = Color(UIColor(named: "AccentColor") ?? .systemBlue),
+        tintColor: Color = Color(UIColor(named: "AccentColor") ?? .systemBlue), // swiftlint:disable:this function_default_parameter_at_end
         shouldConfirmCancel: Bool,
         result: @escaping @MainActor (TaskResult) async -> Void
     ) {
