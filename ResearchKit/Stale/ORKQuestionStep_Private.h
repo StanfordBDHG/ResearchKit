@@ -28,12 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-
-#if TARGET_OS_IOS || TARGET_OS_VISION
-#import <ResearchKit/ORKQuestionStep.h>
 #import <ResearchKit/ORKAnswerFormat_Private.h>
-#endif
+#import <ResearchKit/ORKQuestionStep.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

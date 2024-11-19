@@ -34,7 +34,7 @@
 #import <UIKit/UIKit.h>
 
 #import <ResearchKit/ORKDefines.h>
-#import <UserNotifications/UNUserNotificationCenter.h>
+#import <UserNotifications/UserNotifications.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -81,7 +81,9 @@ ORK_CLASS_AVAILABLE
 
 + (ORKMotionActivityPermissionType *) deviceMotionPermissionType;
 
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
 + (ORKLocationPermissionType *) locationPermissionType;
+#endif
 
 @end
 

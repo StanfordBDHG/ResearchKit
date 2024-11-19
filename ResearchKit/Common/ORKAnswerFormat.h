@@ -32,11 +32,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #import <UIKit/UIKit.h>
-
-
-#if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKTypes.h>
 
 @class ORKScaleAnswerFormat;
@@ -56,11 +52,12 @@
 @class ORKLocationAnswerFormat;
 @class ORKSESAnswerFormat;
 @class ORKImageChoice;
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class ORKBooleanAnswerFormat;
+@class ORKColorChoiceAnswerFormat;
+@class ORKColorChoice;
 @class ORKTextChoiceAnswerFormat;
 @class ORKTextChoice;
 
@@ -123,6 +120,8 @@ ORK_CLASS_AVAILABLE
 + (ORKTextChoiceAnswerFormat *)choiceAnswerFormatWithStyle:(ORKChoiceAnswerStyle)style
                                                textChoices:(NSArray<ORKTextChoice *> *)textChoices;
 
++ (ORKColorChoiceAnswerFormat *)choiceAnswerFormatWithStyle:(ORKChoiceAnswerStyle)style
+                                               colorChoices:(NSArray<ORKColorChoice *> *)colorChoices;
 
 /// @name Validation
 
@@ -189,8 +188,28 @@ ORK_CLASS_AVAILABLE
  */
 @property (copy, readonly) NSArray<ORKTextChoice *> *textChoices;
 
+/**
+ Returns YES if the answer is no longer valid, specifically used in the ORKFormStep Restoration
+ */
+- (BOOL)isAnswerInvalid:(id)answer;
+
 @end
 
+
+ORK_CLASS_AVAILABLE
+@interface ORKColorChoiceAnswerFormat : ORKAnswerFormat
+
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+
+- (instancetype)initWithStyle:(ORKChoiceAnswerStyle)style
+                 colorChoices:(NSArray<ORKColorChoice *> *)colorChoices NS_DESIGNATED_INITIALIZER;
+
+@property (readonly) ORKChoiceAnswerStyle style;
+
+@property (copy, readonly) NSArray<ORKColorChoice *> *colorChoices;
+
+@end
 
 
 /**
@@ -386,11 +405,35 @@ ORK_CLASS_AVAILABLE
 @end
 
 
+ORK_CLASS_AVAILABLE
+@interface ORKColorChoice: NSObject <NSSecureCoding, NSCopying, NSObject>
 
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
-#pragma mark - iOS
+- (instancetype)initWithColor:(nullable UIColor *)color
+                         text:(nullable NSString *)text
+                   detailText:(nullable NSString *)detailText
+                        value:(NSObject<NSCopying, NSSecureCoding> *)value;
 
-#if TARGET_OS_IOS || TARGET_OS_VISION
+- (instancetype)initWithColor:(nullable UIColor *)color
+                         text:(nullable NSString *)text
+                   detailText:(nullable NSString *)detailText
+                        value:(NSObject<NSCopying, NSSecureCoding> *)value
+                    exclusive:(BOOL)exclusive;
+
+@property (nonatomic, copy, readonly, nullable) UIColor *color;
+
+@property (nonatomic, copy, readonly, nullable) NSString *text;
+
+@property (nonatomic, copy, readonly, nullable) NSString *detailText;
+
+@property (nonatomic, copy, readonly) NSObject<NSCopying, NSSecureCoding> *value;
+
+@property (readonly) BOOL exclusive;
+
+@end
+
 @interface ORKAnswerFormat()
 
 /// @name Factory methods
@@ -481,7 +524,7 @@ ORK_CLASS_AVAILABLE
                                                       maximumValue:(double)maximumValue
                                                       defaultValue:(double)defaultValue;
 
-#if !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS && !TARGET_OS_VISION
 + (ORKLocationAnswerFormat *)locationAnswerFormat;
 #endif
 
@@ -1739,6 +1782,7 @@ This By default, the value of this property is `NO`.
   */
 @property (copy, nullable) NSString *placeholder;
 
+#if !TARGET_OS_WATCH
 /**
  The autocapitalization type that applies to the user's input.
  
@@ -1781,6 +1825,7 @@ This By default, the value of this property is `NO`.
  If specified, overrides the default password generation rules for fields with secureTextEntry.
  */
 @property (nonatomic, copy, nullable) UITextInputPasswordRules *passwordRules API_AVAILABLE(ios(12));
+#endif
 
 @end
 
@@ -2028,6 +2073,134 @@ ORK_CLASS_AVAILABLE
 
 @end
 
+/**
+ The `ORKAgeAnswerFormat` class represents the answer format for questions that require users
+ to enter a weight.
+ 
+ A weight answer format produces an `ORKNumericQuestionResult` object. The result is always reported
+ in the metric system using the `kg` unit.
+ */
+ORK_CLASS_AVAILABLE
+@interface ORKAgeAnswerFormat : ORKAnswerFormat
+
+/**
+ Returns an initialized weight answer format using the measurement system specified in the current
+ locale.
+ 
+ @return An initialized weight answer format.
+ */
+- (instancetype)init;
+
+- (instancetype)initWithMinimumAge:(NSInteger)minimumAge
+                        maximumAge:(NSInteger)maximumAge;
+
+- (instancetype)initWithMinimumAge:(NSInteger)minimumAge
+                        maximumAge:(NSInteger)maximumAge
+              minimumAgeCustomText:(nullable NSString *)minimumAgeCustomText
+              maximumAgeCustomText:(nullable NSString *)maximumAgeCustomText
+                          showYear:(BOOL)showYear
+                  useYearForResult:(BOOL)useYearForResult
+                      defaultValue:(NSInteger)defaultValue;
+
+- (instancetype)initWithMinimumAge:(NSInteger)minimumAge
+                        maximumAge:(NSInteger)maximumAge
+              minimumAgeCustomText:(nullable NSString *)minimumAgeCustomText
+              maximumAgeCustomText:(nullable NSString *)maximumAgeCustomText
+                          showYear:(BOOL)showYear
+                  useYearForResult:(BOOL)useYearForResult
+                treatMinAgeAsRange:(BOOL)treatMinAgeAsRange
+                treatMaxAgeAsRange:(BOOL)treatMaxAgeAsRange
+                      defaultValue:(NSInteger)defaultValue;
+
++ (int)minimumAgeSentinelValue;
++ (int)maximumAgeSentinelValue;
+
+/**
+ Minimum age value presented in the picker
+ 
+ By default, the value of this property is 0.
+ */
+@property (readonly) NSInteger minimumAge;
+
+
+/**
+ Maximum age value presented in the picker.
+ 
+ By default, the value of this property is 125.
+ */
+@property (readonly) NSInteger maximumAge;
+
+
+/**
+ Custom text that will replace the minimumAge value.
+ 
+ By default, the value of this property is nil.
+ */
+ 
+@property (readonly, nullable) NSString *minimumAgeCustomText;
+
+/**
+ Custom text that will replace the maximumAge value.
+ 
+ By default, the value of this property is nil.
+ */
+ 
+@property (readonly, nullable) NSString *maximumAgeCustomText;
+
+
+/**
+ Boolean that determines if the year should be shown alongside the age value.
+ 
+ By default, the value of this property is nil.
+ */
+ 
+@property (readonly) BOOL showYear;
+
+/**
+ The year at which the picker will base all of its ages from.
+ 
+ By default, the value of this property will be the current year.
+ */
+ 
+@property (nonatomic) NSInteger relativeYear;
+
+
+/**
+ Boolean that determines if the year for the selected age should be used in the result.
+ 
+ By default, the value of this property is NO.
+ */
+ 
+@property (readonly) BOOL useYearForResult;
+
+/**
+ Boolean that determines if the minimumAge property should be treated as range.
+ 
+ -1 will be returned if minimumAge is selected
+ 
+ By default, the value of this property is NO.
+ */
+ 
+@property (readonly) BOOL treatMinAgeAsRange;
+
+/**
+ Boolean that determines if the maximumAge property should be treated as range.
+ 
+ -2 will be returned if maximumAge is selected
+ 
+ By default, the value of this property is NO.
+ */
+
+@property (readonly) BOOL treatMaxAgeAsRange;
+
+/**
+ The default value for the picker.
+ */
+
+@property (readonly) NSInteger defaultValue;
+
+@end
+
 
 /**
  The `ORKLocationAnswerFormat` class represents the answer format for questions that collect a location response
@@ -2035,6 +2208,7 @@ ORK_CLASS_AVAILABLE
  
  An `ORKLocationAnswerFormat` object produces an `ORKLocationQuestionResult` object.
  */
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 ORK_CLASS_AVAILABLE
 @interface ORKLocationAnswerFormat : ORKAnswerFormat
 
@@ -2053,6 +2227,7 @@ ORK_CLASS_AVAILABLE
 @property (copy, nullable) NSString *placeholder;
 
 @end
+#endif
 
 /**
  Socio-Economic Ladder Answer Format.
@@ -2068,7 +2243,5 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, nullable) NSString *bottomRungText;
 
 @end
-
-#endif
 
 NS_ASSUME_NONNULL_END

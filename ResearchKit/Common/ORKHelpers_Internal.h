@@ -29,19 +29,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-#import <UIKit/UIKit.h>
-
-#if TARGET_OS_IOS || TARGET_OS_VISION
-#import <ResearchKit/ORKTypes.h>
-#import <ResearchKit/ORKHelpers_Private.h>
-#import <ResearchKit/ORKErrors.h>
-#endif
-
-
 #import <Foundation/Foundation.h>
 #import <os/log.h>
+#import <UIKit/UIKit.h>
 
+#import <ResearchKit/ORKErrors.h>
+#import <ResearchKit/ORKHelpers_Private.h>
+#import <ResearchKit/ORKTypes.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -372,6 +366,13 @@ ORK_INLINE double ORKPoundsAndOuncesToKilograms(double pounds, double ounces) {
 
 ORK_INLINE double ORKPoundsToKilograms(double pounds) {
     return ORKPoundsAndOuncesToKilograms(pounds, 0);
+}
+
+ORK_INLINE double ORKForceDoubleToLimits(double value) {
+    if (value == NAN || value == INFINITY) {
+        return DBL_MAX;
+    }
+    return fmin(fmax(value, -DBL_MAX), DBL_MAX);
 }
 
 ORK_INLINE UIColor *ORKOpaqueColorWithReducedAlphaFromBaseColor(UIColor *baseColor, NSUInteger colorIndex, NSUInteger totalColors) {
