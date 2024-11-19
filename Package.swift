@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 
 import class Foundation.ProcessInfo
 import PackageDescription
@@ -43,9 +43,6 @@ let package = Package(
                 .target(name: "ResearchKit"),
                 .target(name: "ResearchKitUI"),
                 .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )
