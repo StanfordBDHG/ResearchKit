@@ -52,7 +52,7 @@
 #import <ResearchKit/ORKStepNavigationRule.h>
 
 // Import these files for iOS only.
-#if !TARGET_OS_WATCH && !TARGET_OS_VISION
+#if !TARGET_OS_WATCH
 #import <ResearchKit/ORKDefines.h>
 #import <ResearchKit/ORKActiveStep.h>
 #import <ResearchKit/ORKConsentReviewStep.h>

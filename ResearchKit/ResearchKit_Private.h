@@ -43,7 +43,7 @@
 #import <ResearchKit/ORKDevice.h>
 #import <ResearchKit/ORKStepNavigationRule_Private.h>
 
-#if !TARGET_OS_WATCH && !TARGET_OS_VISION
+#if !TARGET_OS_WATCH
 #import <ResearchKit/CLLocationManager+ResearchKit.h>
 #import <ResearchKit/ORKActiveStep_Internal.h>
 #import <ResearchKit/ORKConsentDocument_Private.h>
