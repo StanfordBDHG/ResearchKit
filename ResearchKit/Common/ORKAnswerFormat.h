@@ -524,7 +524,7 @@ ORK_CLASS_AVAILABLE
                                                       maximumValue:(double)maximumValue
                                                       defaultValue:(double)defaultValue;
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS && !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 + (ORKLocationAnswerFormat *)locationAnswerFormat;
 #endif
 
