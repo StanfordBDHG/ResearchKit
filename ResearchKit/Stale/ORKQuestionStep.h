@@ -30,11 +30,7 @@
 
 
 #import <Foundation/Foundation.h>
-
-
-#if TARGET_OS_IOS
 #import <ResearchKit/ORKStep.h>
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -77,7 +73,7 @@ ORK_CLASS_AVAILABLE
                                       question:(nullable NSString *)question
                                     answer:(nullable ORKAnswerFormat *)answerFormat;
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 /**
  Returns a new question step that includes the specified identifier, title, question, and answer format.
  
@@ -152,7 +148,7 @@ ORK_CLASS_AVAILABLE
 
 @end
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 #pragma mark - iOS
 
 @interface ORKQuestionStep ()

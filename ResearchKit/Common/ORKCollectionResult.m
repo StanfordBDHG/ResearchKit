@@ -263,7 +263,7 @@
 }
 
 - (void)updateEnabledAssistiveTechnology {
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     if (UIAccessibilityIsVoiceOverRunning()) {
         _enabledAssistiveTechnology = [UIAccessibilityNotificationVoiceOverIdentifier copy];
     } else if (UIAccessibilityIsSwitchControlRunning()) {
@@ -315,7 +315,7 @@
 @end
 
 #pragma mark - ORKPageResult
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 @implementation ORKPageResult
 
 - (instancetype)initWithPageStep:(ORKPageStep *)step stepResult:(ORKStepResult*)result {

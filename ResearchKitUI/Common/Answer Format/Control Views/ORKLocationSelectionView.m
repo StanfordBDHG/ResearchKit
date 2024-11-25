@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 
 #import "ORKLocationSelectionView.h"
 
@@ -102,7 +102,7 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
     static CGFloat textFieldBottomMargin = 0;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        textFieldBottomMargin = 1.0 / [UIScreen mainScreen].scale;
+        textFieldBottomMargin = 1.0 / ScreenScale();
     });
     return textFieldBottomMargin;
 }
@@ -191,8 +191,8 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
     if (_seperator1) {
         _seperator1.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *seperators = NSDictionaryOfVariableBindings(_seperator1);
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:_textField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_seperator1 attribute:NSLayoutAttributeTop multiplier:1.0 constant:-1.0/[UIScreen mainScreen].scale]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator1 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / [UIScreen mainScreen].scale]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:_textField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_seperator1 attribute:NSLayoutAttributeTop multiplier:1.0 constant:-1.0/ScreenScale()]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator1 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / ScreenScale()]];
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_seperator1]|" options:NSLayoutFormatDirectionLeadingToTrailing metrics:nil views:seperators]];
     }
     
@@ -200,7 +200,7 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
         _seperator2.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *seperators = NSDictionaryOfVariableBindings(_seperator2);
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_textField attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_seperator2 attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator2 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / [UIScreen mainScreen].scale]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator2 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / ScreenScale()]];
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_seperator2]|" options:NSLayoutFormatDirectionLeadingToTrailing metrics:nil views:seperators]];
     }
     
@@ -267,7 +267,7 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
         _seperator3.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *seperators = NSDictionaryOfVariableBindings(_seperator3);
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_mapView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_seperator3 attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator3 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / [UIScreen mainScreen].scale]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:_seperator3 attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1.0 / ScreenScale()]];
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_seperator3]|" options:NSLayoutFormatDirectionLeadingToTrailing metrics:nil views:seperators]];
     }
     
@@ -356,7 +356,7 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
     ORKLocation *location = isAnswerClassORKLocation ? (ORKLocation *)_answer : nil;
     
     if (location) {
-        
+
         if (!location.userInput || !location.region |!location.postalAddress) {
             // redo geo decoding if any of them is missing
             [self reverseGeocodeAndDisplay:location];

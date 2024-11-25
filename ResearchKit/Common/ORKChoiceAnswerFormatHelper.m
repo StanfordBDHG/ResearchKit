@@ -63,7 +63,7 @@
     
     return _choices[index];
 }
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 - (ORKImageChoice *)imageChoiceAtIndex:(NSUInteger)index {
     id<ORKAnswerOption> option = [self answerOptionAtIndex:index];
     return option && [option isKindOfClass:[ORKImageChoice class]] ? (ORKImageChoice *) option : nil;
@@ -96,7 +96,8 @@
         }
         
         id<ORKAnswerOption> choice = _choices[index];
-#if TARGET_OS_IOS
+
+#if TARGET_OS_IOS || TARGET_OS_VISION
         ORKTextChoiceOther *textChoiceOther;
         if ([choice isKindOfClass: [ORKTextChoiceOther class]]) {
             textChoiceOther = (ORKTextChoiceOther *)choice;
@@ -144,7 +145,7 @@
             BOOL isTextChoiceOtherResult = [self _isTextChoiceOtherResult:answerValue choices:_choices];
             
             for ( id<ORKAnswerOption> choice in _choices) {
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
                 if ([choice isKindOfClass:[ORKTextChoiceOther class]]) {
                     ORKTextChoiceOther *textChoiceOther = (ORKTextChoiceOther *)choice;
                     if ([textChoiceOther.textViewText isEqual:answerValue]) {

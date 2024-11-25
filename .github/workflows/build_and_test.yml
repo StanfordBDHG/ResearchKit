@@ -1,0 +1,68 @@
+#
+# This source file is part of the Stanford Biodesign Digital Health Group open-source organization
+#
+# SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Build and Test
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  create-xcframework-researchkit:
+    name: XCFramework
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    strategy:
+      matrix:
+        framework: [ResearchKit, ResearchKitUI]
+    with:
+      workspaceFile: RKWorkspace.xcworkspace
+      xcFrameworkName: ${{ matrix.framework }}
+      scheme: ${{ matrix.framework }}
+      runsonlabels: '["macOS", "self-hosted"]'
+      sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
+  create-xcframework-researchkit-active-tasks:
+    name: XCFramework (ResearchKitActiveTask)
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    with:
+      workspaceFile: RKWorkspace.xcworkspace
+      xcFrameworkName: ResearchKitActiveTask
+      scheme: ResearchKitActiveTask
+      runsonlabels: '["macOS", "self-hosted"]'
+      sdk: '["iphoneos", "iphonesimulator"]'
+  commit-and-release-xcframeworks:
+    name: Commit and Release XCFrameworks
+    needs: [create-xcframework-researchkit, create-xcframework-researchkit-active-tasks]
+    uses: StanfordBDHG/.github/.github/workflows/xcframework-commit-and-release.yml@v2
+    with:
+      dryrun: true
+      outputpath: './Sources'
+  ios:
+    name: Build and Test iOS
+    uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      path: 'Tests/UITests'
+      scheme: TestApp
+      resultBundle: TestApp-iOS.xcresult
+      artifactname: TestApp-iOS.xcresult
+  uploadcoveragereport:
+    name: Upload Coverage Report
+    needs: [ios]
+    uses: StanfordBDHG/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
+    with:
+      coveragereports: TestApp-iOS.xcresult
+    secrets:
+      token: ${{ secrets.CODECOV_TOKEN }}

@@ -122,7 +122,7 @@ static const CGFloat DontKnowButtonBottomPaddingOffset = 10.0;
         [[view.topAnchor constraintEqualToAnchor:self.topAnchor] setActive:YES];
         
         if (_dontKnowButton) {
-            CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+            CGFloat separatorHeight = 1.0 / ScreenScale();
             [[_dividerView.topAnchor constraintEqualToAnchor:view.bottomAnchor constant:DividerViewTopPadding] setActive:YES];
             [[_dividerView.leftAnchor constraintEqualToAnchor:self.leftAnchor] setActive:YES];
             [[_dividerView.rightAnchor constraintEqualToAnchor:self.rightAnchor] setActive:YES];

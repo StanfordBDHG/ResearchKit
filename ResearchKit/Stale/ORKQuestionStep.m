@@ -28,24 +28,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <ResearchKit/ORKAnswerFormat_Internal.h>
+#import <ResearchKit/ORKAnswerFormat_Private.h>
+#import <ResearchKit/ORKHelpers_Internal.h>
+#import <ResearchKit/ORKQuestionStep_Private.h>
+#import <ResearchKit/ORKQuestionStep.h>
+#import <ResearchKit/ORKStep_Private.h>
 
-#if TARGET_OS_IOS
-#import "ORKAnswerFormat_Internal.h"
-#import "ORKAnswerFormat_Private.h"
-#import "ORKHelpers_Internal.h"
+#if TARGET_OS_IOS || TARGET_OS_VISION
 #import "ORKLearnMoreItem.h"
-#import "ORKQuestionStep_Private.h"
-#import "ORKStep_Private.h"
-#import "ORKQuestionStep.h"
 #endif
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStyleDefault = @"default";
 ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter = @"platter";
 #endif
 
 @implementation ORKQuestionStep
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 @synthesize presentationStyle = _presentationStyle;
 #endif
 
@@ -63,7 +63,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
     return step;
 }
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 
 + (instancetype)platterQuestionWithIdentifier:(NSString *)identifier
                                      question:(NSString *)question
@@ -148,7 +148,8 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
         self.useCardView = YES;
         self.showsProgress = YES;
         self.tagText = nil;
-#if TARGET_OS_IOS
+
+#if TARGET_OS_IOS || TARGET_OS_VISION
         self.presentationStyle = ORKQuestionStepPresentationStyleDefault;
 #endif
     }
@@ -158,7 +159,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
 - (void)validateParameters {
     [super validateParameters];
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     if([self.answerFormat isKindOfClass:[ORKConfirmTextAnswerFormat class]]) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:@"ORKConfirmTextAnswerFormat can only be used with an ORKFormStep."
@@ -201,7 +202,8 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
     ORKQuestionStep *questionStep = [super copyWithZone:zone];
     questionStep.answerFormat = [self.answerFormat copy];
     questionStep.placeholder = [self.placeholder copy];
-#if TARGET_OS_IOS
+
+#if TARGET_OS_IOS || TARGET_OS_VISION
     questionStep.learnMoreItem = [self.learnMoreItem copy];
     questionStep.presentationStyle = self.presentationStyle;
 #endif
@@ -218,7 +220,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
     return isParentSame &&
     ORKEqualObjects(self.answerFormat, castObject.answerFormat) &&
     ORKEqualObjects(self.placeholder, castObject.placeholder) &&
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     ORKEqualObjects(self.presentationStyle, castObject.presentationStyle) &&
     ORKEqualObjects(self.learnMoreItem, castObject.learnMoreItem) &&
 #endif
@@ -234,7 +236,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
     self.placeholder.hash ^
     (_useCardView ? 0xf : 0x0) ^
     self.tagText.hash
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     ^ self.learnMoreItem.hash
     ^ _presentationStyle.hash
 #endif
@@ -260,7 +262,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
         ORK_DECODE_OBJ_CLASS(aDecoder, answerFormat, ORKAnswerFormat);
         ORK_DECODE_OBJ_CLASS(aDecoder, placeholder, NSString);
         ORK_DECODE_OBJ_CLASS(aDecoder, question, NSString);
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
         ORK_DECODE_OBJ_CLASS(aDecoder, learnMoreItem, ORKLearnMoreItem);
         ORK_DECODE_OBJ_CLASS(aDecoder, presentationStyle, NSString);
 #endif
@@ -277,7 +279,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
     ORK_ENCODE_OBJ(aCoder, answerFormat);
     ORK_ENCODE_OBJ(aCoder, placeholder);
     ORK_ENCODE_OBJ(aCoder, question);
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     ORK_ENCODE_OBJ(aCoder, learnMoreItem);
     ORK_ENCODE_OBJ(aCoder, presentationStyle);
 #endif
@@ -300,7 +302,7 @@ ORKQuestionStepPresentationStyle const ORKQuestionStepPresentationStylePlatter =
         return NO;
     }
     
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     return ((self.questionType == ORKQuestionTypeSingleChoice && ![self isFormatChoiceWithImageOptions] && ![self isFormatChoiceValuePicker]) ||
             (self.questionType == ORKQuestionTypeMultipleChoice && ![self isFormatChoiceWithImageOptions]) ||
             self.questionType == ORKQuestionTypeBoolean);

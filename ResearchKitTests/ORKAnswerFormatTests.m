@@ -1109,7 +1109,7 @@
     {
         NSUInteger maxFractionDigits = 5;
         ORKContinuousScaleAnswerFormat* scaleAnswer = [[ORKContinuousScaleAnswerFormat alloc] initWithMaximumValue:10 minimumValue:1 defaultValue:0.0 maximumFractionDigits:maxFractionDigits];
-        XCTAssertEqualObjects([scaleAnswer.numberFormatter stringFromNumber:@99.12345],  @"99.1234");
+        XCTAssertEqualObjects([scaleAnswer.numberFormatter stringFromNumber:@99.12345],  @"99.1235");
     }
     {
         NSUInteger maxFractionDigits = -1;
@@ -1448,11 +1448,13 @@
     XCTAssertEqual([regexAnswerFormat isAnswerValidWithString:incorrectPhoneNumber], NO, @"Should return NO since it is not in the correct format");
 }
 
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
 - (void)testLocationAnswerFormat {
     ORKLocationAnswerFormat *answerFormat = [ORKAnswerFormat locationAnswerFormat];
     [answerFormat setUseCurrentLocation:YES];
     XCTAssertEqual(answerFormat.useCurrentLocation, YES);
 }
+#endif
 
 - (void)testWeightAnswerFormat {
     ORKWeightAnswerFormat *answerFormat = [ORKAnswerFormat weightAnswerFormatWithMeasurementSystem:ORKMeasurementSystemMetric

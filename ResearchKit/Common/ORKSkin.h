@@ -28,12 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #import <UIKit/UIKit.h>
-#if TARGET_OS_IOS
 #import <ResearchKit/ORKDefines.h>
-#endif
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -92,7 +88,7 @@ ORK_EXTERN NSString *const ORKDoneButtonPressedKey;
 ORK_EXTERN NSString *const ORKResetDoneButtonKey;
 
 /// Return the color for a specified ORK...ColorKey
-UIColor *ORKColor(NSString *colorKey);
+ORK_EXTERN UIColor *ORKColor(NSString *colorKey);
 
 /// Return minimum height for form step header view
 ORK_EXTERN CGFloat ORKFormStepMinimumHeaderHeight;
@@ -225,7 +221,7 @@ typedef NS_ENUM(NSInteger, ORKScreenType) {
     ORKScreenType_COUNT
 };
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 ORKScreenType ORKGetVerticalScreenTypeForWindow(UIWindow * _Nullable window);
 CGFloat ORKGetMetricForWindow(ORKScreenMetric metric, UIWindow * _Nullable window);
 

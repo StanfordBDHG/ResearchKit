@@ -685,7 +685,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
         [[_dontKnowBackgroundView.trailingAnchor constraintEqualToAnchor:self.containerView.trailingAnchor] setActive:YES];
         [[_dontKnowBackgroundView.bottomAnchor constraintEqualToAnchor:self.containerView.bottomAnchor] setActive:YES];
         
-        CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+        CGFloat separatorHeight = 1.0 / ScreenScale();
         [[_dividerView.topAnchor constraintEqualToAnchor:self.errorLabel.bottomAnchor constant:DividerViewTopPadding] setActive:YES];
         [[_dividerView.leadingAnchor constraintEqualToAnchor:self.containerView.leadingAnchor] setActive:YES];
         [[_dividerView.trailingAnchor constraintEqualToAnchor:self.containerView.trailingAnchor] setActive:YES];
@@ -1202,7 +1202,9 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
     self.labelLabel.text = nil; // reset value set during [super config]
 
     _textView = [[ORKFormTextView alloc] init];
+    #if !TARGET_OS_VISION
     _textView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+    #endif
     _textView.delegate = self;
     _textView.textAlignment = NSTextAlignmentNatural;
     _textView.scrollEnabled = YES;
@@ -1308,7 +1310,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
         [[_dontKnowBackgroundView.trailingAnchor constraintEqualToAnchor:self.containerView.trailingAnchor] setActive:YES];
         [[_dontKnowBackgroundView.bottomAnchor constraintEqualToAnchor:self.containerView.bottomAnchor] setActive:YES];
         
-        CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+        CGFloat separatorHeight = 1.0 / ScreenScale();
         [[_dividerView.topAnchor constraintEqualToAnchor:topViewToConstrainTo.bottomAnchor constant:DividerViewTopPadding] setActive:YES];
         [[_dividerView.leadingAnchor constraintEqualToAnchor:self.containerView.leadingAnchor] setActive:YES];
         [[_dividerView.trailingAnchor constraintEqualToAnchor:self.containerView.trailingAnchor] setActive:YES];
@@ -1927,7 +1929,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
 @end
 
 #pragma mark - ORKFormItemLocationCell
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
 @interface ORKFormItemLocationCell () <ORKLocationSelectionViewDelegate>
 
 @property (nonatomic, assign) BOOL editingHighlight;
@@ -1976,7 +1978,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
     
     NSDictionary *dictionary = @{@"_selectionView":_selectionView};
     ORKEnableAutoLayoutForViews([dictionary allValues]);
-    NSDictionary *metrics = @{@"verticalMargin":@(VerticalMargin), @"horizontalMargin":@(ORKSurveyItemMargin), @"verticalMarginBottom":@(VerticalMargin - (1.0 / [UIScreen mainScreen].scale))};
+    NSDictionary *metrics = @{@"verticalMargin":@(VerticalMargin), @"horizontalMargin":@(ORKSurveyItemMargin), @"verticalMarginBottom":@(VerticalMargin - (1.0 / ScreenScale()))};
     
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_selectionView]|" options:NSLayoutFormatDirectionLeadingToTrailing metrics:metrics views:dictionary]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_selectionView]" options:NSLayoutFormatDirectionLeadingToTrailing metrics:metrics views:dictionary]];
@@ -2027,7 +2029,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
 
 - (void)locationSelectionViewNeedsResize:(ORKLocationSelectionView *)view {
     _heightConstraint.constant = _selectionView.intrinsicContentSize.height;
-    _bottomConstraint.constant = -(VerticalMargin - (1.0 / [UIScreen mainScreen].scale));
+    _bottomConstraint.constant = -(VerticalMargin - (1.0 / ScreenScale()));
     
     [self cellNeedsToResize];
 }

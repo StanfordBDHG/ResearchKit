@@ -1,0 +1,57 @@
+#
+# This source file is part of the Stanford Biodesign Digital Health Group open-source organization
+#
+# SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Create XCFramework and Release
+
+concurrency:
+  group: Release
+  cancel-in-progress: false
+
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version number of the framework embedded in the XCArchives & XCFrameworks. This version number is also used for the release tag.'
+        type: string
+        required: true
+
+jobs:
+  create-xcframework-researchkit:
+    name: XCFramework
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    strategy:
+      matrix:
+        framework: [ResearchKit, ResearchKitUI]
+    with:
+      workspaceFile: RKWorkspace.xcworkspace
+      xcFrameworkName: ${{ matrix.framework }}
+      scheme: ${{ matrix.framework }}
+      version: ${{ inputs.version }}
+      configuration: Release
+      runsonlabels: '["macOS", "self-hosted"]'
+      sdk: '["iphoneos", "iphonesimulator", "xros", "xrsimulator"]'
+  create-xcframework-researchkit-active-tasks:
+    name: XCFramework (ResearchKitActiveTask)
+    uses: StanfordBDHG/.github/.github/workflows/xcframework.yml@v2
+    with:
+      workspaceFile: RKWorkspace.xcworkspace
+      xcFrameworkName: ResearchKitActiveTask
+      scheme: ResearchKitActiveTask
+      version: ${{ inputs.version }}
+      configuration: Release
+      runsonlabels: '["macOS", "self-hosted"]'
+      sdk: '["iphoneos", "iphonesimulator"]'
+  commit-and-release-xcframeworks:
+    name: Commit and Release XCFrameworks
+    needs: [create-xcframework-researchkit, create-xcframework-researchkit-active-tasks]
+    uses: StanfordBDHG/.github/.github/workflows/xcframework-commit-and-release.yml@v2
+    with:
+      outputpath: './Sources'
+      user: PaulsAutomationBot
+    secrets:
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

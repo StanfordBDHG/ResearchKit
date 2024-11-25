@@ -33,17 +33,16 @@
 #import <HealthKit/HealthKit.h>
 #endif
 
-#if TARGET_OS_IOS
 #import <ResearchKit/ORKAnswerFormat_Private.h>
 #import <ResearchKit/ORKChoiceAnswerFormatHelper.h>
-#endif
+
 @class ORKChoiceAnswerFormatHelper;
 
 NS_ASSUME_NONNULL_BEGIN
 
 BOOL ORKIsAnswerEmpty(_Nullable id answer);
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 #if ORK_FEATURE_HEALTHKIT_AUTHORIZATION
 NSString *ORKHKBiologicalSexString(HKBiologicalSex biologicalSex);
 NSString *ORKHKBloodTypeString(HKBloodType bloodType);
@@ -58,7 +57,7 @@ NSString *ORKQuestionTypeString(ORKQuestionType questionType);
 @end
 
 ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKAnswerFormat)
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKImageChoiceAnswerFormat)
 ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKValuePickerAnswerFormat)
 ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKMultipleValuePickerAnswerFormat)
@@ -86,7 +85,7 @@ ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKTextChoice)
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 - (BOOL)isHealthKitAnswerFormat;
 
 #if ORK_FEATURE_HEALTHKIT_AUTHORIZATION
@@ -106,7 +105,7 @@ ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKTextChoice)
 @end
 
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 @interface ORKNumericAnswerFormat ()
 
 - (nullable NSString *)sanitizedTextFieldText:(nullable NSString *)text decimalSeparator:(nullable NSString *)separator;
@@ -135,7 +134,12 @@ ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKTextChoice)
 
 @end
 
-#if TARGET_OS_IOS
+@interface ORKDateAnswerFormat () {
+    NSDate *_currentDateOverride;
+}
+@end
+
+#if TARGET_OS_IOS || TARGET_OS_VISION
 @protocol ORKScaleAnswerFormatProvider <NSObject>
 
 - (nullable NSNumber *)minimumNumber;
@@ -197,7 +201,8 @@ NSArray<Class> *ORKAllowableValueClasses(void);
 
 @end
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
+
 @interface ORKValuePickerAnswerFormat ()
 
 - (instancetype)initWithTextChoices:(NSArray<ORKTextChoice *> *)textChoices nullChoice:(ORKTextChoice *)nullChoice NS_DESIGNATED_INITIALIZER;
@@ -205,7 +210,6 @@ NSArray<Class> *ORKAllowableValueClasses(void);
 - (ORKTextChoice *)nullTextChoice;
 
 @end
-
 
 @interface ORKImageChoice () <ORKAnswerOption>
 
@@ -218,11 +222,7 @@ NSArray<Class> *ORKAllowableValueClasses(void);
 
 @end
 
-
-@interface ORKDateAnswerFormat () {
-    NSDate *_currentDateOverride;
-}
-
+@interface ORKDateAnswerFormat ()
 - (NSDate *)pickerDefaultDate;
 - (nullable NSDate *)pickerMinimumDate;
 - (nullable NSDate *)pickerMaximumDate;

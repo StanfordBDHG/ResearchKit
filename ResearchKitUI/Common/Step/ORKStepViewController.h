@@ -110,6 +110,7 @@ ORK_CLASS_AVAILABLE
  */
 - (void)stepViewControllerDidFail:(ORKStepViewController *)stepViewController withError:(nullable NSError *)error;
 
+#if TARGET_OS_IOS
 /**
  Tells the delegate when a recorder error has been detected during the step.
  
@@ -121,6 +122,7 @@ ORK_CLASS_AVAILABLE
  @param error                  The error detected.
  */
 - (void)stepViewController:(ORKStepViewController *)stepViewController recorder:(ORKRecorder *)recorder didFailWithError:(NSError *)error;
+#endif
 
 @optional
 /**
@@ -206,7 +208,7 @@ ORK_CLASS_AVAILABLE
  or Next buttons, set the `learnMoreButtonTitle` or `continueButtonTitle`
  properties in your implementation of this delegate method.
  */
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 ORK_CLASS_AVAILABLE
 @interface ORKStepViewController : UIViewController
 

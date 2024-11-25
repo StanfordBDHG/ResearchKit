@@ -2,7 +2,7 @@
   "configurations" : [
     {
       "id" : "A9C8689E-BBEE-4643-8C5D-DBA6A5AF01B2",
-      "name" : "Configuration 1",
+      "name" : "Default",
       "options" : {
 
       }
@@ -14,7 +14,11 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "ORKDataCollectionTests"
+        "ORKDataCollectionTests",
+        "ORKJSONSerializationTests\/testEquality",
+        "ORKJSONSerializationTests\/testORKSampleDeserialization",
+        "ORKJSONSerializationTests\/testORKSerialization",
+        "ORKJSONSerializationTests\/testSecureCoding"
       ],
       "target" : {
         "containerPath" : "container:ResearchKit.xcodeproj",

@@ -205,7 +205,7 @@ static NSString *ORKBulletUnicode = @"\u2981";
     UIView *separator = [UIView new];
     separator.translatesAutoresizingMaskIntoConstraints = NO;
     separator.backgroundColor = UIColor.separatorColor;
-    [separator.heightAnchor constraintEqualToConstant:1.0 / [UIScreen mainScreen].scale].active = YES;
+    [separator.heightAnchor constraintEqualToConstant:1.0 / ScreenScale()].active = YES;
     [self addArrangedSubview:separator];
 }
 

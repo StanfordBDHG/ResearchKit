@@ -29,19 +29,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-#import <UIKit/UIKit.h>
-
-#if TARGET_OS_IOS
-#import <ResearchKit/ORKTypes.h>
-#import <ResearchKit/ORKHelpers_Private.h>
-#import <ResearchKit/ORKErrors.h>
-#endif
-
-
 #import <Foundation/Foundation.h>
 #import <os/log.h>
+#import <UIKit/UIKit.h>
 
+#import <ResearchKit/ORKErrors.h>
+#import <ResearchKit/ORKHelpers_Private.h>
+#import <ResearchKit/ORKTypes.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -171,6 +165,8 @@ UIColor *ORKRGBA(uint32_t x, CGFloat alpha);
 
 _Nullable id ORKFindInArrayByKey(NSArray *array, NSString *key, id value);
 
+CGFloat ScreenScale(void);
+
 NSString *ORKSignatureStringFromDate(NSDate *date);
 
 NSURL *ORKCreateRandomBaseURL(void);
@@ -178,7 +174,7 @@ NSURL *ORKCreateRandomBaseURL(void);
 // Marked extern so it is accessible to unit tests
 ORK_EXTERN NSString *ORKFileProtectionFromMode(ORKFileProtectionMode mode);
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 
 CGFloat ORKExpectedLabelHeight(UILabel *label);
 
@@ -207,7 +203,7 @@ BOOL ORKCurrentLocalePresentsFamilyNameFirst(void);
 UIFont *ORKTimeFontForSize(CGFloat size);
 UIFontDescriptor *ORKFontDescriptorForLightStylisticAlternative(UIFontDescriptor *descriptor);
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 CGFloat ORKFloorToViewScale(CGFloat value, UIView *view);
 #endif
 
@@ -289,7 +285,7 @@ extern const double ORKDoubleInvalidValue;
 
 extern const CGFloat ORKCGFloatInvalidValue;
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 void ORKAdjustPageViewControllerNavigationDirectionForRTL(UIPageViewControllerNavigationDirection *direction);
 #endif
 
@@ -399,8 +395,8 @@ ORK_INLINE UIColor *ORKOpaqueColorWithReducedAlphaFromBaseColor(UIColor *baseCol
 }
 
 // Localization
-ORK_EXTERN NSBundle *ORKBundle(void) ORK_AVAILABLE_DECL;
-ORK_EXTERN NSBundle *ORKDefaultLocaleBundle(void);
+extern NSBundle *ORKBundle(void) ORK_AVAILABLE_DECL;
+extern NSBundle *ORKDefaultLocaleBundle(void);
 
 ORK_INLINE NSString *ORKLocalizedHiddenString(NSString *key) {
     NSString *value = [ORKBundle() localizedStringForKey:key value:key table:@"ResearchKit"];

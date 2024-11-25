@@ -28,7 +28,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !TARGET_OS_VISION
+
+#ifndef USE_SENSOR_KIT
+#define USE_SENSOR_KIT 0
+#endif
+
+
+#if USE_SENSOR_KIT
 #import <SensorKit/SensorKit.h>
+#endif
 
 #import "ORKSensorPermissionType.h"
 #import "ORKHelpers_Internal.h"
@@ -44,7 +53,9 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
 @end
 
 @implementation ORKSensorPermissionType {
+#if USE_SENSOR_KIT
     NSSet<SRSensorReader *> *_readers;
+#endif
 }
 
 + (instancetype)new {
@@ -60,12 +71,14 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
     self = [super init];
     if (self) {
         self.sensors = sensors;
+#if USE_SENSOR_KIT
         NSMutableSet *readers = [[NSMutableSet alloc] init];
         for (SRSensor sensor in sensors) {
             SRSensorReader *reader = [[SRSensorReader alloc] initWithSensor:sensor];
             [readers addObject:reader];
         }
         _readers = [readers copy];
+#endif
     }
     return self;
 }
@@ -90,9 +103,11 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
 
 
 - (ORKRequestPermissionsState)permissionState {
+#if USE_SENSOR_KIT
     if ([self hasRequestedAllSensors]) {
         return ORKRequestPermissionsStateConnected;
     }
+#endif
     return ORKRequestPermissionsStateDefault;
 }
 
@@ -101,15 +116,20 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
 }
 
 - (BOOL)hasRequestedAllSensors {
+#if USE_SENSOR_KIT
     for (SRSensorReader *reader in _readers) {
         if (reader.authorizationStatus == SRAuthorizationStatusNotDetermined) {
             return NO;
         }
     }
     return YES;
+#else
+    return NO;
+#endif
 }
 
 - (void)requestPermission {
+#if USE_SENSOR_KIT
     [SRSensorReader requestAuthorizationForSensors:self.sensors completion:^(NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
@@ -121,6 +141,7 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
             }
         });
     }];
+#endif
 }
 
 - (BOOL)isEqual:(id)object {
@@ -133,3 +154,5 @@ static const uint32_t IconDarkTintColor = 0x9D71F7;
 }
 
 @end
+
+#endif

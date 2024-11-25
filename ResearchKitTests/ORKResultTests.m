@@ -56,6 +56,7 @@
 
 @implementation ORKResultTests
 
+#if TARGET_OS_IOS
 - (ORKTaskResult *)createTaskResultTree {
     // Construction
     ORKFileResult *fileResult1 = [[ORKFileResult alloc] initWithIdentifier:@"fileResultIdentifier"];
@@ -168,6 +169,7 @@
     
     XCTAssertEqualObjects(taskResult1, taskResult2);
 }
+#endif
 
 - (void)testCollectionResult {
     ORKCollectionResult *result = [[ORKCollectionResult alloc] initWithIdentifier:@"001"];

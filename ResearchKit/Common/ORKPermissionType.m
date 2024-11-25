@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !TARGET_OS_VISION
+
 #import "ORKHealthKitPermissionType.h"
 #import "ORKNotificationPermissionType.h"
 #import "ORKSensorPermissionType.h"
@@ -91,3 +93,4 @@
 
 @end
 
+#endif

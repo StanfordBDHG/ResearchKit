@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
         result = matchesType ? [ORKFormItemScaleCell class] : result;
     }
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
     if (result == nil) {
         BOOL matchesType = NO;
         matchesType = matchesType || (type == ORKQuestionTypeLocation);

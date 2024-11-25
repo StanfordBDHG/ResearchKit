@@ -30,7 +30,7 @@
 
 
 #import "ORKTableViewCell.h"
-
+#import "ORKHelpers_Internal.h"
 #import "ORKSelectionTitleLabel.h"
 
 #import "ORKSkin.h"
@@ -76,7 +76,7 @@
         [self addSubview:_bottomSeparator];
         _bottomSeparator.translatesAutoresizingMaskIntoConstraints = NO;
         
-        CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+        CGFloat separatorHeight = 1.0 / ScreenScale();
         
         NSMutableArray *constraints = [NSMutableArray array];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_bottomSeparator
@@ -128,7 +128,7 @@
         [self addSubview:_topSeparator];
         _topSeparator.translatesAutoresizingMaskIntoConstraints = NO;
         
-        CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+        CGFloat separatorHeight = 1.0 / ScreenScale();
         
         NSMutableArray *constraints = [NSMutableArray array];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_topSeparator

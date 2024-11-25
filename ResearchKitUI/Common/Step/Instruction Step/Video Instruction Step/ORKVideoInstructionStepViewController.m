@@ -107,6 +107,7 @@
 }
 
 - (void)setThumbnailImageFromAsset {
+    #if TARGET_OS_IOS
     if ([self videoInstructionStep].image) {
         return;
     }
@@ -122,6 +123,7 @@
     UIImage *thumbnailImage = [UIImage imageWithCGImage:thumbnailImageRef];
     CGImageRelease(thumbnailImageRef);
     [self videoInstructionStep].image = thumbnailImage;
+    #endif
 }
 
 - (void)play {

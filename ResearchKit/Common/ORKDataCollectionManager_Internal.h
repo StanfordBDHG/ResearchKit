@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if TARGET_OS_IOS
+
 
 #import "ORKDataCollectionManager.h"
 #import <CoreMotion/CoreMotion.h>
@@ -51,3 +53,5 @@
 @property (nonatomic, strong) NSDate *lastCollectionDate;
 
 @end
+
+#endif

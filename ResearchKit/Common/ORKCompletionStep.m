@@ -34,7 +34,7 @@
 
 
 @implementation ORKCompletionStep
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 - (instancetype)initWithIdentifier:(NSString *)identifier {
     self = [super initWithIdentifier:identifier];
     if (self) {

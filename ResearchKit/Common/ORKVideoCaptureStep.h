@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if TARGET_OS_IOS
+
 
 #import <ResearchKit/ResearchKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -87,12 +89,14 @@ ORK_CLASS_AVAILABLE
  */
 @property (nonatomic, getter=isAudioMute) BOOL audioMute;
 
+#if !TARGET_OS_VISION
 /**
  Constants indicating the desired torch mode to use
  
  The default value is `AVCaptureTorchModeAuto` (see `AVCaptureTorchMode`).
  */
 @property (nonatomic) AVCaptureTorchMode torchMode;
+#endif
 
 /**
  Constants indicating the physical position of an AVCaptureDevice's hardware on the system.
@@ -125,3 +129,5 @@ ORK_CLASS_AVAILABLE
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

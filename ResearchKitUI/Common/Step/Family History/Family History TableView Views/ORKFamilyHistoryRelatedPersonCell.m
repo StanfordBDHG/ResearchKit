@@ -274,7 +274,12 @@ typedef void (^ORKFamilyHistoryEditDeleteViewEventHandler)(ORKFamilyHistoryEditD
 }
 
 - (NSArray<NSLayoutConstraint *> *)_dividerConstraintsFromView:(UIView *)referenceView {
-    CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
+    CGFloat separatorHeight =
+#if TARGET_OS_VISION
+    1.0 / 2.0;
+#else
+    1.0 / [UIScreen mainScreen].scale;
+#endif
     NSLayoutConstraint *heightConstraint = [_dividerView.heightAnchor constraintEqualToConstant:separatorHeight];
     [heightConstraint setPriority:UILayoutPriorityDefaultLow];
     return @[

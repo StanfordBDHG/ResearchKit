@@ -28,6 +28,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !TARGET_OS_VISION
+
+
 #import "ORKMotionActivityPermissionType.h"
 #import "ORKHelpers_Internal.h"
 
@@ -118,3 +121,5 @@ static const uint32_t IconDarkTintColor = 0xEF6FD8;
 }
 
 @end
+
+#endif

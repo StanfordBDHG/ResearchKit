@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if TARGET_OS_IOS
 
 #import "ORKHealthSampleQueryOperation.h"
 #import "ORKCollector.h"
@@ -245,4 +246,5 @@ static NSUInteger const QueryLimitSize = 1000;
 }
 
 @end
+#endif
 #endif

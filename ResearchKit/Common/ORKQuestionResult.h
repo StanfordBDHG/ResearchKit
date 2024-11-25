@@ -28,16 +28,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if TARGET_OS_IOS
+#import <Contacts/Contacts.h>
 #import <ResearchKit/ORKResult.h>
-#endif
 
-
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 #import <CoreLocation/CLLocation.h>
 #endif
-
-#import <Contacts/Contacts.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -153,7 +149,7 @@ ORK_CLASS_AVAILABLE
 @end
 
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 /**
  The `ORKLocation` class represents the location addess obtained from a location question.
  */
@@ -168,10 +164,12 @@ ORK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 
+#if TARGET_OS_IOS
 /**
  The region describes the size of the placemark of the location.
  */
 @property (nonatomic, copy, readonly, nullable) CLCircularRegion *region;
+#endif
 
 /**
  The human readable address typed in by user.
@@ -184,7 +182,7 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, copy, readonly, nullable) CNPostalAddress *postalAddress;
 
 @end
-#endif 
+#endif
 
 /**
  A result object from a location answer format.
@@ -196,7 +194,8 @@ ORK_CLASS_AVAILABLE
  completes, it may be appropriate to serialize it for transmission to a server,
  or to immediately perform analysis on it.
  */
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 ORK_CLASS_AVAILABLE
 @interface ORKLocationQuestionResult : ORKQuestionResult
 
@@ -206,7 +205,7 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, copy, nullable) ORKLocation *locationAnswer;
 
 @end
-#endif 
+#endif
 
 /**
  A result object from a multiple-component picker-style choice-based answer format.

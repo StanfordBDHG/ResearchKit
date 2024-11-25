@@ -29,11 +29,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-
-#if TARGET_OS_IOS
 #import <ResearchKit/ORKCollectionResult.h>
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -62,7 +58,7 @@ ORK_CLASS_AVAILABLE
 @end
 
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 @interface ORKStepResult ()
 
 @property (nonatomic) BOOL isPreviousResult;

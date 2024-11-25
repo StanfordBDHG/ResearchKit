@@ -29,6 +29,8 @@
  */
 
 
+#if !TARGET_OS_VISION
+
 #import <Foundation/Foundation.h>
 #import <ResearchKit/ResearchKit.h>
 #import <CoreMotion/CoreMotion.h>
@@ -200,3 +202,5 @@ ORK_CLASS_AVAILABLE
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif
