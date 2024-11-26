@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
 
 #import "ORKLocationSelectionView.h"
 
@@ -495,5 +495,4 @@ static const NSString *FormattedAddressLines = @"FormattedAddressLines";
 }
 
 @end
-
-#endif
+#endif 

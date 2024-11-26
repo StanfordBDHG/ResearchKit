@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
 @interface ORKLocation ()
 
 #if TARGET_OS_IOS
@@ -62,5 +62,5 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithPlacemark:(CLPlacemark *)placemark userInput:(NSString *)userInput;
 
 @end
-
+#endif
 NS_ASSUME_NONNULL_END

@@ -1820,6 +1820,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
           [answerFormat isKindOfClass:[ORKTimeIntervalAnswerFormat class]] ||
           [answerFormat isKindOfClass:[ORKValuePickerAnswerFormat class]] ||
           [answerFormat isKindOfClass:[ORKMultipleValuePickerAnswerFormat class]] ||
+          [answerFormat isKindOfClass:[ORKAgeAnswerFormat class]] ||
           [answerFormat isKindOfClass:[ORKHeightAnswerFormat class]] ||
           [answerFormat isKindOfClass:[ORKWeightAnswerFormat class]])) {
         [self throwPickerTypeException];
@@ -1927,9 +1928,8 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
 
 @end
 
-#if !TARGET_OS_VISION
 #pragma mark - ORKFormItemLocationCell
-
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
 @interface ORKFormItemLocationCell () <ORKLocationSelectionViewDelegate>
 
 @property (nonatomic, assign) BOOL editingHighlight;
@@ -2054,7 +2054,7 @@ NSString * const ORKClearTextViewButtonAccessibilityIdentifier = @"ORKClearTextV
 }
 
 @end
-#endif
+#endif 
 
 @interface ORKFormItemSESCell()<ORKSESSelectionViewDelegate>
 
