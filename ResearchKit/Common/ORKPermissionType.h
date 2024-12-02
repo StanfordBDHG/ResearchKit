@@ -71,6 +71,7 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, assign, readonly) BOOL canContinue;
 
 - (void)requestPermission;
+- (void)cleanUp;
 
 + (ORKHealthKitPermissionType *)healthKitPermissionTypeWithSampleTypesToWrite:(nullable NSSet<HKSampleType *> *)sampleTypesToWrite
                                                             objectTypesToRead:(nullable NSSet<HKObjectType *> *)objectTypesToRead;
@@ -81,7 +82,9 @@ ORK_CLASS_AVAILABLE
 
 + (ORKMotionActivityPermissionType *) deviceMotionPermissionType;
 
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
 + (ORKLocationPermissionType *) locationPermissionType;
+#endif
 
 @end
 

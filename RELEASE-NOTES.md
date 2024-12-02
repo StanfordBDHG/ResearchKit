@@ -1,5 +1,37 @@
 # ResearchKit Release Notes
 
+## ResearchKit 3.1.1 Release Notes
+General bug fixes for the following:
+
+- **ORKMotionActivityPermissionType**
+Fixed issue that caused the next button to remain disabled after gaining permission from user.
+
+- **ORKRegistrationStep**
+Removed yellow overlay that prevented password entry.
+
+- **ORKdBHLToneAudiometryStep**
+Fixed issue that caused the tap button to appear twice.
+
+
+## ResearchKit 3.1 Release Notes
+In addition to general stability and performance improvements, ResearchKit 3.1 includes the following updates:
+
+- **ORKFamilyHistoryStep**
+The `ORKFamilyHistoryStep` can be configured to present a Family Health History survey.
+
+- **ORKColorChoiceAnswerFormat**
+The `ORKColorChoiceAnswerFormat` presents the user with a list of color choices.
+
+- **ORKAgeAnswerFormat**
+The `ORKAgeAnswerFormat` presents a age picker that presents birth year or current age options depending on how you configure it.
+
+- **CLLocation Flag**
+A compiler flag that prevents your app from being flagged during app store submission if your app doesn't require location services.
+
+- **HealthKit Flag**
+A compiler flag that prevents your app from being flagged during app store submission if your app doesn't use HealthKit.
+
+
 ## ResearchKit 3.0.1 Release Notes
 In addition to general stability and performance improvements, ResearchKit 3.0.1 includes the following updates:
 
