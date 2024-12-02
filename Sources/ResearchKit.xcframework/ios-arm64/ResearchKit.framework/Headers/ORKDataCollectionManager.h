@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  If NO is returned or this method is not implemented, the manager will stop the collection for the collector and repeat this same collection next time,
  until the data is accepted.
  */
+#if ORK_FEATURE_HEALTHKIT_AUTHORIZATION
 - (BOOL)healthCollector:(ORKHealthCollector *)collector didCollectSamples:(NSArray<HKSample *> *)samples;
 
 /**
@@ -75,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
  until the data is accepted.
  */
 - (BOOL)healthCorrelationCollector:(ORKHealthCorrelationCollector *)collector didCollectCorrelations:(NSArray<HKCorrelation *> *)correlations;
-
+#endif
 /**
  Method for delivering the collected motion activities.
  
@@ -147,6 +148,7 @@ ORK_CLASS_AVAILABLE
  
  @return Initiated health collector.
  */
+#if ORK_FEATURE_HEALTHKIT_AUTHORIZATION
 - (ORKHealthCollector *)addHealthCollectorWithSampleType:(HKSampleType *)sampleType
                                                     unit:(HKUnit *)unit
                                                startDate:(NSDate *)startDate
@@ -168,7 +170,7 @@ ORK_CLASS_AVAILABLE
                                                                               units:(NSArray<HKUnit *> *)units
                                                                           startDate:(NSDate *)startDate
                                                                               error:(NSError * _Nullable *)error;
-
+#endif 
 /**
  Add a collector for motion activity.
  

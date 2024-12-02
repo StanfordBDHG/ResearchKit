@@ -1,8 +1,8 @@
 {
   "ABIRoot": {
     "kind": "Root",
-    "name": "TopLevel",
-    "printedName": "TopLevel",
+    "name": "ResearchKitUI",
+    "printedName": "ResearchKitUI",
     "children": [
       {
         "kind": "Import",
@@ -274,6 +274,20 @@
         "conformances": [
           {
             "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
             "name": "Equatable",
             "printedName": "Equatable",
             "usr": "s:SQ",
@@ -539,6 +553,20 @@
         "conformances": [
           {
             "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
             "name": "PreferenceKey",
             "printedName": "PreferenceKey",
             "children": [
@@ -573,6 +601,13 @@
             "printedName": "Sendable",
             "usr": "s:s8SendableP",
             "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "BitwiseCopyable",
+            "printedName": "BitwiseCopyable",
+            "usr": "s:s15BitwiseCopyableP",
+            "mangledName": "$ss15BitwiseCopyableP"
           }
         ]
       },
@@ -606,6 +641,8 @@
             "mangledName": "$s13ResearchKitUI18FullScreenModifierV11isPresented05SwiftC07BindingVySbGvp",
             "moduleName": "ResearchKitUI",
             "declAttributes": [
+              "Preconcurrency",
+              "Custom",
               "HasStorage"
             ],
             "fixedbinaryorder": 0,
@@ -674,6 +711,8 @@
             "mangledName": "$s13ResearchKitUI18FullScreenModifierV7builderxycvp",
             "moduleName": "ResearchKitUI",
             "declAttributes": [
+              "Preconcurrency",
+              "Custom",
               "HasStorage"
             ],
             "fixedbinaryorder": 1,
@@ -764,6 +803,7 @@
             "genericSig": "<τ_0_0 where τ_0_0 : SwiftUI.View>",
             "sugared_genericSig": "<V where V : SwiftUI.View>",
             "declAttributes": [
+              "Preconcurrency",
               "Custom",
               "Custom"
             ],
@@ -826,6 +866,9 @@
             "genericSig": "<τ_0_0 where τ_0_0 : SwiftUI.View>",
             "sugared_genericSig": "<V where V : SwiftUI.View>",
             "implicit": true,
+            "declAttributes": [
+              "Nonisolated"
+            ],
             "init_kind": "Designated"
           }
         ],
@@ -835,7 +878,25 @@
         "moduleName": "ResearchKitUI",
         "genericSig": "<τ_0_0 where τ_0_0 : SwiftUI.View>",
         "sugared_genericSig": "<V where V : SwiftUI.View>",
+        "declAttributes": [
+          "Preconcurrency",
+          "Custom"
+        ],
         "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
           {
             "kind": "Conformance",
             "name": "ViewModifier",
@@ -864,6 +925,13 @@
             ],
             "usr": "s:7SwiftUI12ViewModifierP",
             "mangledName": "$s7SwiftUI12ViewModifierP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -906,6 +974,7 @@
             "mangledName": "$s13ResearchKitUI14TextChoiceViewV04textE6HelperAA011SwiftUITexteH0Cvp",
             "moduleName": "ResearchKitUI",
             "declAttributes": [
+              "Preconcurrency",
               "Custom",
               "ProjectedValueProperty",
               "Custom"
@@ -1012,6 +1081,7 @@
             "moduleName": "ResearchKitUI",
             "implicit": true,
             "declAttributes": [
+              "Preconcurrency",
               "Custom"
             ],
             "accessors": [
@@ -1063,8 +1133,9 @@
             "implicit": true,
             "isInternal": true,
             "declAttributes": [
-              "HasStorage",
-              "Custom"
+              "Preconcurrency",
+              "Custom",
+              "HasStorage"
             ],
             "fixedbinaryorder": 0,
             "hasStorage": true
@@ -1106,8 +1177,9 @@
             "moduleName": "ResearchKitUI",
             "declAttributes": [
               "HasInitialValue",
-              "HasStorage",
-              "Custom"
+              "Preconcurrency",
+              "Custom",
+              "HasStorage"
             ],
             "fixedbinaryorder": 1,
             "hasStorage": true,
@@ -1241,8 +1313,9 @@
             "isInternal": true,
             "declAttributes": [
               "HasInitialValue",
-              "HasStorage",
+              "Preconcurrency",
               "Custom",
+              "HasStorage",
               "AccessControl"
             ],
             "fixedbinaryorder": 2,
@@ -1273,6 +1346,7 @@
             "mangledName": "$s13ResearchKitUI14TextChoiceViewV4bodyQrvp",
             "moduleName": "ResearchKitUI",
             "declAttributes": [
+              "Preconcurrency",
               "Custom"
             ],
             "accessors": [
@@ -1363,9 +1437,24 @@
         "mangledName": "$s13ResearchKitUI14TextChoiceViewV",
         "moduleName": "ResearchKitUI",
         "declAttributes": [
+          "Preconcurrency",
           "Custom"
         ],
         "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
           {
             "kind": "Conformance",
             "name": "View",
@@ -1394,6 +1483,13 @@
             ],
             "usr": "s:7SwiftUI4ViewP",
             "mangledName": "$s7SwiftUI4ViewP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -2052,6 +2148,20 @@
         "conformances": [
           {
             "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
             "name": "ObservableObject",
             "printedName": "ObservableObject",
             "children": [
@@ -2135,6 +2245,10 @@
             "moduleName": "ResearchKitUI",
             "genericSig": "<τ_0_0, τ_1_0 where τ_0_0 : SwiftUI.View, τ_1_0 : SwiftUI.View>",
             "sugared_genericSig": "<Self, Content where Self : SwiftUI.View, Content : SwiftUI.View>",
+            "declAttributes": [
+              "Preconcurrency",
+              "Custom"
+            ],
             "isFromExtension": true,
             "funcSelfKind": "NonMutating"
           }
@@ -2142,7 +2256,7 @@
         "declKind": "Protocol",
         "usr": "s:7SwiftUI4ViewP",
         "mangledName": "$s7SwiftUI4ViewP",
-        "moduleName": "SwiftUI",
+        "moduleName": "SwiftUICore",
         "genericSig": "<τ_0_0.Body : SwiftUI.View>",
         "sugared_genericSig": "<Self.Body : SwiftUI.View>",
         "intro_Macosx": "10.15",
@@ -2150,13 +2264,35 @@
         "intro_tvOS": "13.0",
         "intro_watchOS": "6.0",
         "declAttributes": [
+          "Preconcurrency",
           "TypeEraser",
+          "OriginallyDefinedIn",
+          "OriginallyDefinedIn",
+          "OriginallyDefinedIn",
+          "OriginallyDefinedIn",
           "Available",
           "Available",
           "Available",
-          "Available"
+          "Available",
+          "Custom"
         ],
-        "isExternal": true
+        "isExternal": true,
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          }
+        ]
       }
     ],
     "json_format_version": 8
