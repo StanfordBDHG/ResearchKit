@@ -243,7 +243,7 @@ struct StickyScrollView<BodyContent: View, FooterContent: View>: View {
 
 private struct FrameSizeKey: PreferenceKey {
     typealias Value = CGSize
-    static var defaultValue = CGSize.zero
+    static let defaultValue = CGSize.zero
     static func reduce(value: inout Value, nextValue: () -> Value) {
         value = CGSize(
             width: value.width + nextValue().width,
@@ -254,7 +254,7 @@ private struct FrameSizeKey: PreferenceKey {
 
 private struct BodySizeKey: PreferenceKey {
     typealias Value = CGSize
-    static var defaultValue = CGSize.zero
+    static let defaultValue = CGSize.zero
     static func reduce(value: inout Value, nextValue: () -> Value) {
         value = CGSize(
             width: value.width + nextValue().width,
@@ -265,7 +265,7 @@ private struct BodySizeKey: PreferenceKey {
 
 private struct KeyboardIgnoringSafeAreaInsets: PreferenceKey {
     typealias Value = EdgeInsets
-    static var defaultValue = EdgeInsets(
+    static let defaultValue = EdgeInsets(
         top: 0, leading: 0, bottom: 0, trailing: 0)
     static func reduce(value: inout Value, nextValue: () -> Value) {
         let nextValue = nextValue()
@@ -280,7 +280,7 @@ private struct KeyboardIgnoringSafeAreaInsets: PreferenceKey {
 
 private struct SafeAreaInsetsKey: PreferenceKey {
     typealias Value = EdgeInsets
-    static var defaultValue = EdgeInsets(
+    static let defaultValue = EdgeInsets(
         top: 0, leading: 0, bottom: 0, trailing: 0)
     static func reduce(value: inout Value, nextValue: () -> Value) {
         let nextValue = nextValue()
