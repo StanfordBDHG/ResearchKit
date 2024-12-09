@@ -30,7 +30,6 @@
 
 #if TARGET_OS_IOS
 
-
 #import <Foundation/Foundation.h>
 #import <ResearchKit/ResearchKit.h>
 #import <CoreMotion/CoreMotion.h>

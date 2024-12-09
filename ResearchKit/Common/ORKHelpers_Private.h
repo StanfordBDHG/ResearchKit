@@ -34,8 +34,6 @@
 #import <ResearchKit/ORKDefines.h>
 #endif
 
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 #if !defined(ORK_INLINE)

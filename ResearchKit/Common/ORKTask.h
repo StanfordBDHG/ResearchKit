@@ -35,11 +35,9 @@
 #import <HealthKit/HealthKit.h>
 #endif
 
-
 #if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKTypes.h>
 #endif
-
 
 NS_ASSUME_NONNULL_BEGIN
 

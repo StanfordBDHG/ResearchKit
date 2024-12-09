@@ -33,6 +33,7 @@
 #if TARGET_OS_IOS || TARGET_OS_VISION
 #import <ResearchKit/ORKQuestionStep.h>
 #import <ResearchKit/ORKAnswerFormat_Private.h>
+#import <ResearchKit/ORKQuestionStep.h>
 #endif
 
 NS_ASSUME_NONNULL_BEGIN

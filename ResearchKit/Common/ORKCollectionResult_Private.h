@@ -68,7 +68,7 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic) BOOL isPreviousResult;
 
 @end
-#endif // TARGET_OS_IOS
+#endif // TARGET_OS_IOS || TARGET_OS_VISION
 
 @interface ORKTaskResult ()
 

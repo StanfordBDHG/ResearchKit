@@ -282,7 +282,7 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
 
 @end
 
-#endif // TARGET_OS_IOS
+#endif // TARGET_OS_IOS || TARGET_OS_VISION
 
 #pragma mark - ORKAnswerFormat
 
@@ -423,7 +423,7 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
                                                                           calendar:calendar];
     [answerFormat setDaysBeforeCurrentDateToSetMinimumDate:daysBefore];
     [answerFormat setDaysAfterCurrentDateToSetMinimumDate:daysAfter];
-    
+
     return answerFormat;
 }
 
@@ -488,7 +488,7 @@ static NSNumberFormatterStyle ORKNumberFormattingStyleConvert(ORKNumberFormattin
                                                        defaultValue:defaultValue];
 }
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 + (ORKLocationAnswerFormat *)locationAnswerFormat {
     return [ORKLocationAnswerFormat new];
 }
@@ -841,7 +841,7 @@ static NSArray *ork_processTextChoices(NSArray<ORKTextChoice *> *textChoices) {
 
 - (BOOL)isEqual:(id)object {
     BOOL isParentSame = [super isEqual:object];
-    
+
     __typeof(self) castObject = object;
     return (isParentSame &&
             ORKEqualObjects(self.valuePickers, castObject.valuePickers));
@@ -890,7 +890,7 @@ static NSArray *ork_processTextChoices(NSArray<ORKTextChoice *> *textChoices) {
     if (![answer isKindOfClass:[NSArray class]] || ([(NSArray*)answer count] != self.valuePickers.count)) {
         return nil;
     }
-    
+
     NSArray *answers = (NSArray*)answer;
     __block NSMutableArray <NSString *> *answerTexts = [NSMutableArray new];
     [answers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -901,11 +901,11 @@ static NSArray *ork_processTextChoices(NSArray<ORKTextChoice *> *textChoices) {
             *stop = YES;
         }
     }];
-    
+
     if (answerTexts.count != self.valuePickers.count) {
         return nil;
     }
-    
+
     return [answerTexts componentsJoinedByString:self.separator];
 }
 
@@ -1028,7 +1028,6 @@ static NSArray *ork_processTextChoices(NSArray<ORKTextChoice *> *textChoices) {
 
 @end
 #endif
-
 
 #pragma mark - ORKTextChoiceAnswerFormat
 
@@ -3069,7 +3068,6 @@ NSArray<Class> *ORKAllowableValueClasses(void) {
     
 }
 
-
 - (instancetype)initWithMaximumLength:(NSInteger)maximumLength {
     self = [super init];
     if (self) {
@@ -3320,7 +3318,6 @@ static NSString *const kSecureTextEntryEscapeString = @"*";
 
     return answerString;
 }
-
 
 - (ORKQuestionResult *)resultWithIdentifier:(NSString *)identifier answer:(id)answer {
     ORKQuestionResult *questionResult = nil;
@@ -4019,7 +4016,7 @@ static const NSInteger ORKAgeAnswerDefaultMaxAge = 125;
 @end
 
 
-#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && TARGET_OS_IOS
 #pragma mark - ORKLocationAnswerFormat
 @implementation ORKLocationAnswerFormat
 

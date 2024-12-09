@@ -35,6 +35,7 @@
 
 #import <ResearchKit/ORKDefines.h>
 #import <UserNotifications/UNUserNotificationCenter.h>
+#import <UserNotifications/UserNotifications.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

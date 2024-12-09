@@ -1448,7 +1448,7 @@
     XCTAssertEqual([regexAnswerFormat isAnswerValidWithString:incorrectPhoneNumber], NO, @"Should return NO since it is not in the correct format");
 }
 
-#if !TARGET_OS_VISION
+#if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION && !TARGET_OS_VISION
 - (void)testLocationAnswerFormat {
     ORKLocationAnswerFormat *answerFormat = [ORKAnswerFormat locationAnswerFormat];
     [answerFormat setUseCurrentLocation:YES];

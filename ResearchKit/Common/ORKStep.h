@@ -35,6 +35,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <ResearchKit/ORKTypes.h>
 
 @class HKObjectType;
 @class ORKResult;
@@ -311,6 +312,9 @@ API_AVAILABLE(ios(11))
 
 @end
 #endif
+
+
+#pragma mark - watchOS / VisionOS
 
 
 NS_ASSUME_NONNULL_END

@@ -32,7 +32,6 @@
 #import <ResearchKit/ORKResult.h>
 #endif
 
-
 NS_ASSUME_NONNULL_BEGIN
 
 ORK_EXTERN const NSUInteger NumberOfPaddingSpacesForIndentationLevel;

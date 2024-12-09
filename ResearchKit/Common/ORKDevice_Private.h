@@ -32,7 +32,6 @@
 #import <ResearchKit/ORKDevice.h>
 #endif
 
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ORKDevice (ORKESerializerSupport)

@@ -68,6 +68,18 @@ static BOOL ORKIsResearchKitClass(Class class) {
 #endif
     
     
+#if !ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
+    NSArray<NSString *> *locationClasses = @[
+        @"ORKLocation",
+        @"ORKLocationQuestionResult",
+        @"ORKLocationAnswerFormat",
+        @"ORKLocationRecorderConfiguration"
+    ];
+   
+   classesToExclude = [classesToExclude arrayByAddingObjectsFromArray:locationClasses];
+#endif
+    
+    
     return classesToExclude;
 }
 

@@ -34,7 +34,6 @@
 #import <ResearchKit/ORKOrderedTask.h>
 #endif
 
-
 NS_ASSUME_NONNULL_BEGIN
 
 /**

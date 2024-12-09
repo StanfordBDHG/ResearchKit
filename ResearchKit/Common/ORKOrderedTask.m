@@ -30,8 +30,8 @@
  */
 
 #import "ORKOrderedTask.h"
+
 #import "ORKAnswerFormat.h"
-#import "ORKInstructionStep.h"
 #import "ORKCompletionStep.h"
 #import "ORKStep_Private.h"
 #import "ORKHelpers_Internal.h"
@@ -40,6 +40,12 @@
 #import "ORKQuestionStep.h"
 #import "ORKFormStep.h"
 #import "ORKFormItem_Internal.h"
+#import "ORKHelpers_Internal.h"
+#import "ORKInstructionStep.h"
+#import "ORKQuestionStep.h"
+#import "ORKSkin.h"
+#import "ORKStep_Private.h"
+
 #import "ORKActiveStep_Internal.h"
 #import "ORKEarlyTerminationConfiguration.h"
 #endif
@@ -277,13 +283,6 @@
             }
             totalQuestions += 1;
         }
-#else
-        if ([step isKindOfClass:[ORKQuestionStep class]]) {
-            if (step.identifier == currentStep.identifier) {
-                currentStepStartingProgressNumber = (totalQuestions + 1);
-            }
-            totalQuestions += 1;
-        }
 #endif
     }
     
@@ -376,6 +375,7 @@
 
 #endif
 
+#if TARGET_OS_IOS
 - (BOOL)providesBackgroundAudioPrompts {
     BOOL providesAudioPrompts = NO;
     
@@ -393,6 +393,8 @@
     
     return providesAudioPrompts;
 }
+
+#endif
 
 - (NSSet *)requestedHealthKitTypesForReading {
     NSMutableSet *healthTypes = [NSMutableSet set];

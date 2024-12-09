@@ -35,8 +35,6 @@
 #import <ResearchKit/ORKDefines.h>
 #endif
 
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 /// Error domain for errors with codes in `ORKErrorCode`.

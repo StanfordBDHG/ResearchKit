@@ -48,7 +48,7 @@ BOOL ORKIsAnswerEmpty(_Nullable id answer);
 NSString *ORKHKBiologicalSexString(HKBiologicalSex biologicalSex);
 NSString *ORKHKBloodTypeString(HKBloodType bloodType);
 #endif // ORK_FEATURE_HEALTHKIT_AUTHORIZATION
-#endif // TARGET_OS_IOS
+#endif // TARGET_OS_IOS || TARGET_OS_VISION
 NSString *ORKQuestionTypeString(ORKQuestionType questionType);
 
 // Need to mark these as designated initializers to avoid warnings once we designate the others.
@@ -97,7 +97,7 @@ ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKTextChoice)
 
 @property (nonatomic, strong, nullable) HKUnit *healthKitUserUnit;
 #endif // ORK_FEATURE_HEALTHKIT_AUTHORIZATION
-#endif // TARGET_OS_IOS
+#endif // TARGET_OS_IOS || TARGET_OS_VISION
 
 - (nullable NSString *)localizedInvalidValueStringWithAnswerString:(nullable NSString *)text;
 
@@ -136,6 +136,11 @@ ORK_DESIGNATE_CODING_AND_SERIALIZATION_INITIALIZERS(ORKTextChoice)
 @end
 
 #if TARGET_OS_IOS || TARGET_OS_VISION
+@interface ORKDateAnswerFormat () {
+    NSDate *_currentDateOverride;
+}
+@end
+
 @protocol ORKScaleAnswerFormatProvider <NSObject>
 
 - (nullable NSNumber *)minimumNumber;
@@ -206,7 +211,6 @@ NSArray<Class> *ORKAllowableValueClasses(void);
 
 @end
 
-
 @interface ORKImageChoice () <ORKAnswerOption>
 
 @end
@@ -218,11 +222,7 @@ NSArray<Class> *ORKAllowableValueClasses(void);
 
 @end
 
-
-@interface ORKDateAnswerFormat () {
-    NSDate *_currentDateOverride;
-}
-
+@interface ORKDateAnswerFormat ()
 - (NSDate *)pickerDefaultDate;
 - (nullable NSDate *)pickerMinimumDate;
 - (nullable NSDate *)pickerMaximumDate;

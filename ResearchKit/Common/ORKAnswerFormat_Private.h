@@ -34,7 +34,6 @@
 #import <ResearchKit/ORKAnswerFormat.h>
 #endif
 
-
 NS_ASSUME_NONNULL_BEGIN
 
 ORK_EXTERN id ORKNullAnswerValue(void) ORK_AVAILABLE_DECL;

@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version: 6.0
 
 import class Foundation.ProcessInfo
 import PackageDescription
@@ -13,15 +13,17 @@ let swiftConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
 
 let package = Package(
     name: "ResearchKit",
+    defaultLocalization: "en",
     platforms: [
-        .iOS(.v17),
+        .iOS(.v18),
         .visionOS(.v1)
     ],
     products: [
         .library(name: "ResearchKit", targets: ["ResearchKit"]),
         .library(name: "ResearchKitUI", targets: ["ResearchKitUI"]),
         .library(name: "ResearchKitActiveTask", targets: ["ResearchKitActiveTask"]),
-        .library(name: "ResearchKitSwiftUI", targets: ["ResearchKitSwiftUI"])
+        .library(name: "ResearchKitSwiftUI", targets: ["ResearchKitSwiftUI"]),
+        .library(name: "ResearchKitSwiftUIBridge", targets: ["ResearchKitSwiftUIBridge"])
     ],
     dependencies: [] + swiftLintPackage(),
     targets: [
@@ -40,14 +42,18 @@ let package = Package(
         .target(
             name: "ResearchKitSwiftUI",
             dependencies: [
-                .target(name: "ResearchKit"),
-                .target(name: "ResearchKitUI"),
-                .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
+                .target(name: "ResearchKit")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
-            plugins: [] + swiftLintPlugin()
+            path: "ResearchKitSwiftUI"
+        ),
+        .target(
+             name: "ResearchKitSwiftUIBridge",
+             dependencies: [
+                 .target(name: "ResearchKit"),
+                 .target(name: "ResearchKitUI"),
+                 .target(name: "ResearchKitActiveTask", condition: .when(platforms: [.iOS]))
+             ],
+             plugins: [] + swiftLintPlugin()
         )
     ]
 )
