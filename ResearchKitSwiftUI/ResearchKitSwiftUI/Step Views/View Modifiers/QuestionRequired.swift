@@ -59,7 +59,7 @@ struct QuestionAnsweredPreferenceKey: PreferenceKey {
     }
 }
 
-struct StepCompletedPreferenceKey: PreferenceKey {
+public struct StepCompletedPreferenceKey: PreferenceKey {
     static let defaultValue: Bool = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
