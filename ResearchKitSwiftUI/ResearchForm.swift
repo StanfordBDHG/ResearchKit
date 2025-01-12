@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import SpeziFoundation
 import SwiftUI
 
 /// Manages the navigation between steps in a survey.
@@ -169,16 +170,20 @@ public struct ResearchFormStep<Header: View, Content: View>: View {
                             question
                         }
                     }
-                    .onPreferenceChange(QuestionRequiredPreferenceKey.self) {
-                        if $0 == true {
-                            requiredQuestions.insert(question.id)
+                    .onPreferenceChange(QuestionRequiredPreferenceKey.self) { value in
+                        runOrScheduleOnMainActor {
+                            if value {
+                                requiredQuestions.insert(question.id)
+                            }
                         }
                     }
-                    .onPreferenceChange(QuestionAnsweredPreferenceKey.self) {
-                        if $0 == true {
-                            answeredQuestions.insert(question.id)
-                        } else {
-                            answeredQuestions.remove(question.id)
+                    .onPreferenceChange(QuestionAnsweredPreferenceKey.self) { value in
+                        runOrScheduleOnMainActor {
+                            if value {
+                                answeredQuestions.insert(question.id)
+                            } else {
+                                answeredQuestions.remove(question.id)
+                            }
                         }
                     }
                     .onAppear {
@@ -197,9 +202,10 @@ public struct ResearchFormStep<Header: View, Content: View>: View {
         #if os(iOS)
             .frame(maxWidth: .infinity, alignment: .leading)
         #endif
-        .onPreferenceChange(QuestionCardPreferenceKey.self) {
-            shouldWrapInQuestionCard in
-            self.shouldWrapInQuestionCard = shouldWrapInQuestionCard
+        .onPreferenceChange(QuestionCardPreferenceKey.self) { shouldWrapInQuestionCard in
+            runOrScheduleOnMainActor {
+                self.shouldWrapInQuestionCard = shouldWrapInQuestionCard
+            }
         }
     }
 

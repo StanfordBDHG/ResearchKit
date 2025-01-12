@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import SpeziFoundation
 import SwiftUI
 
 struct ResearchFormStepContentView<Content: View>: View {
@@ -55,8 +56,10 @@ struct ResearchFormStepContentView<Content: View>: View {
     var body: some View {
         StickyScrollView {
             content
-                .onPreferenceChange(StepCompletedPreferenceKey.self) {
-                    doneButtonEnabled = $0
+                .onPreferenceChange(StepCompletedPreferenceKey.self) { value in
+                    runOrScheduleOnMainActor {
+                        doneButtonEnabled = value
+                    }
                 }
                 .padding()
                 #if !os(watchOS)

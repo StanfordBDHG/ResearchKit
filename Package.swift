@@ -25,7 +25,9 @@ let package = Package(
         .library(name: "ResearchKitSwiftUI", targets: ["ResearchKitSwiftUI"]),
         .library(name: "ResearchKitSwiftUIBridge", targets: ["ResearchKitSwiftUIBridge"])
     ],
-    dependencies: [] + swiftLintPackage(),
+    dependencies: [
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.1"),
+    ] + swiftLintPackage(),
     targets: [
         .binaryTarget(
             name: "ResearchKit",
@@ -42,7 +44,8 @@ let package = Package(
         .target(
             name: "ResearchKitSwiftUI",
             dependencies: [
-                .target(name: "ResearchKit")
+                .target(name: "ResearchKit"),
+                .product(name: "SpeziFoundation", package: "SpeziFoundation")
             ],
             path: "ResearchKitSwiftUI"
         ),

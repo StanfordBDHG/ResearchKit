@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import SpeziFoundation
 import SwiftUI
 
 /// A vertical ScrollView with a sticky footer, that returns to flow inline if
@@ -224,19 +225,25 @@ struct StickyScrollView<BodyContent: View, FooterContent: View>: View {
             }
             .coordinateSpace(name: scrollCoordinateSpace)
             .onPreferenceChange(FrameSizeKey.self) { value in
-                self.frameSize = value
+                runOrScheduleOnMainActor {
+                    self.frameSize = value
+                }
             }
             .onPreferenceChange(SafeAreaInsetsKey.self) { value in
-                self.safeAreaInsets = value
+                runOrScheduleOnMainActor {
+                    self.safeAreaInsets = value
+                }
             }
             .onPreferenceChange(KeyboardIgnoringSafeAreaInsets.self) { value in
-                self.keyboardIgnoringSafeAreaInsets = value
+                runOrScheduleOnMainActor {
+                    self.keyboardIgnoringSafeAreaInsets = value
+                }
             }
-            .onPreferenceChange(
-                BodySizeKey.self,
-                perform: { value in
+            .onPreferenceChange(BodySizeKey.self) { value in
+                runOrScheduleOnMainActor {
                     self.bodySize = value
-                })
+                }
+            }
         }
     }
 }
