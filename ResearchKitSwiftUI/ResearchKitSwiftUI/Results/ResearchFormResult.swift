@@ -212,6 +212,6 @@ enum QuestionContext {
 
 private struct QuestionContextKey: EnvironmentKey {
     
-    static var defaultValue: QuestionContext = .standalone
+    static let defaultValue: QuestionContext = .standalone
     
 }
