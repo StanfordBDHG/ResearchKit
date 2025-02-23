@@ -193,7 +193,7 @@ extension ResearchFormResult: Equatable {
 
 extension EnvironmentValues {
     
-    var questionContext: QuestionContext {
+    public var questionContext: QuestionContext {
         get {
             self[QuestionContextKey.self]
         }
@@ -204,7 +204,7 @@ extension EnvironmentValues {
     
 }
 
-enum QuestionContext {
+public enum QuestionContext: Sendable {
     
     case standalone, formEmbedded
     
