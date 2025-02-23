@@ -30,48 +30,22 @@
 
 import SwiftUI
 
-struct TextChoiceOption: View {
+extension ShapeStyle where Self == BodyItemIconForegroundStyle {
 
-    var isSelected: Bool
-
-    var title: Text
-
-    var selection: () -> Void
-
-    public init(title: Text, isSelected: Bool, selection: @escaping () -> Void)
-    {
-        self.title = title
-        self.selection = selection
-        self.isSelected = isSelected
+    /// This foreground style is used for labels that display values associated with sliders.
+    static var bodyItemIconForegroundStyle: BodyItemIconForegroundStyle {
+        BodyItemIconForegroundStyle()
     }
 
-    @ViewBuilder
-    public var body: some View {
+}
 
-        HStack {
-            title
-                .font(.subheadline)
-                .foregroundStyle(Color.choice(for: .label))
-                .frame(maxWidth: .infinity, alignment: .leading)
+struct BodyItemIconForegroundStyle: ShapeStyle {
 
-            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                .imageScale(.large)
-                .foregroundColor(isSelected ? .blue : deselectedCheckmarkColor)
-                .font(.body)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            selection()
-        }
-    }
-
-    private var deselectedCheckmarkColor: Color {
-        #if os(iOS)
-            Color(.systemGray3)
+    func resolve(in environment: EnvironmentValues) -> some ShapeStyle {
+        #if os(visionOS)
+            .white
         #else
-            Color(.lightGray)
+            Color.accentColor
         #endif
     }
 }

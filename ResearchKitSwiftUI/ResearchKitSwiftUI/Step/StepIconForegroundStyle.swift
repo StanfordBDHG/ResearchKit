@@ -30,22 +30,23 @@
 
 import SwiftUI
 
-extension ShapeStyle where Self == SliderValueForegroundStyle {
+extension ShapeStyle where Self == StepIconForegroundStyle {
 
     /// This foreground style is used for labels that display values associated with sliders.
-    static var sliderValueForegroundStyle: SliderValueForegroundStyle {
-        SliderValueForegroundStyle()
+    static var stepIconForegroundStyle: StepIconForegroundStyle {
+        StepIconForegroundStyle()
     }
 
 }
 
-struct SliderValueForegroundStyle: ShapeStyle {
+struct StepIconForegroundStyle: ShapeStyle {
 
     func resolve(in environment: EnvironmentValues) -> some ShapeStyle {
         #if os(visionOS)
-            Color(.label)
+            .white
         #else
-            .blue
+            Color.accentColor
         #endif
     }
+
 }

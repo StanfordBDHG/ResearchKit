@@ -30,23 +30,48 @@
 
 import SwiftUI
 
-extension ShapeStyle where Self == StepIconForegroundStyle {
+struct TextChoiceOption: View {
 
-    /// This foreground style is used for labels that display values associated with sliders.
-    static var stepIconForegroundStyle: StepIconForegroundStyle {
-        StepIconForegroundStyle()
+    var isSelected: Bool
+
+    var title: Text
+
+    var selection: () -> Void
+
+    public init(title: Text, isSelected: Bool, selection: @escaping () -> Void)
+    {
+        self.title = title
+        self.selection = selection
+        self.isSelected = isSelected
     }
 
-}
+    @ViewBuilder
+    public var body: some View {
 
-struct StepIconForegroundStyle: ShapeStyle {
+        HStack {
+            title
+                .font(.subheadline)
+                .foregroundStyle(Color.choice(for: .label))
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-    func resolve(in environment: EnvironmentValues) -> some ShapeStyle {
-        #if os(visionOS)
-            .white
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .imageScale(.large)
+                .foregroundColor(isSelected ? .accentColor : deselectedCheckmarkColor)
+                .font(.body)
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 16)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            selection()
+        }
+    }
+
+    private var deselectedCheckmarkColor: Color {
+        #if os(iOS)
+            Color(.systemGray3)
         #else
-            .blue
+            Color(.lightGray)
         #endif
     }
-
 }
