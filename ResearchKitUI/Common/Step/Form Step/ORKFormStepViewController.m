@@ -1418,8 +1418,8 @@ NSString * const ORKFormStepViewAccessibilityIdentifier = @"ORKFormStepView";
         }
         return nextIndexPath;
     } else {
-        NSString *sectionIdentifier = [_diffableDataSource sectionIdentifierForIndex:nextIndexPath.section];
-        ORKFormItem *formItem = [self _formItemForFormItemIdentifier:sectionIdentifier];
+        NSString *nextSectionIdentifier = [_diffableDataSource sectionIdentifierForIndex:nextIndexPath.section];
+        ORKFormItem *formItem = [self _formItemForFormItemIdentifier:nextSectionIdentifier];
         if (!formItem) {
             return nil;
         } else {
