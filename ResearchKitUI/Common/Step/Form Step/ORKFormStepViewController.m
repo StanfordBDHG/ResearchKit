@@ -1156,13 +1156,12 @@ NSString * const ORKFormStepViewAccessibilityIdentifier = @"ORKFormStepView";
 }
 
 - (nullable ORKFormItem *)_formItemForIndexPath:(NSIndexPath *)indexPath {
+    ORKFormItem *result;
+    
     ORKTableCellItemIdentifier *itemIdentifier = [_diffableDataSource itemIdentifierForIndexPath:indexPath];
-    if (itemIdentifier) {
-        return [self _formItemForFormItemIdentifier:itemIdentifier.formItemIdentifier];
-    } else {
-        NSString *sectionIdentifier = [_diffableDataSource sectionIdentifierForIndex:indexPath.section];
-        return sectionIdentifier ? [self _formItemForFormItemIdentifier:sectionIdentifier] : nil;
-    }
+    result = [self _formItemForFormItemIdentifier:itemIdentifier.formItemIdentifier];
+    
+    return result;
 }
 
 - (nullable ORKFormItem *)_formItemForFormItemIdentifier:(NSString *)formItemIdentifier {
