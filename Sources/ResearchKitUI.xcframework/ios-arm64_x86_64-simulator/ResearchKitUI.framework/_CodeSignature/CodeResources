@@ -374,7 +374,7 @@
 		</data>
 		<key>Headers/ResearchKitUI-Swift.h</key>
 		<data>
-		yQijKn7EueB39idZ77vMzcyCwAM=
+		bE1TBPhCTL735I1higYFO5GEs4A=
 		</data>
 		<key>Headers/ResearchKitUI.h</key>
 		<data>
@@ -398,7 +398,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		U7ucAXCjxGOZC41Wvsd47y2NWbU=
+		mBPEcBZJVUxkv6vlKuzMhRYAN+s=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -406,19 +406,19 @@
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		I7zoTrGW9ZtiXONOVQNoTTOXUBo=
+		Vcp/HiwxXFj/0p98es9qA+MdIVE=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		R9I9ZiYhGhhZIfWXIQq5e4RGMiQ=
+		SYwvwrpIfK37mi9kZoz6kWELCa8=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		I7zoTrGW9ZtiXONOVQNoTTOXUBo=
+		Vcp/HiwxXFj/0p98es9qA+MdIVE=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		4ANRSM6HRc3mnPTjV9V850HBGLU=
+		gd3E2Mz0R4s1/skw6Or9HD8aarQ=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -426,19 +426,19 @@
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		S0ZujNdS4Z0or2VqcWoBzc/k6FE=
+		n9szHlFmV8kgTpVX3apgwOgNZF0=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		WoqKA+U2orPSaj+ixeUPXKAYKhw=
+		NNqRAm1i0Qn4XRde6Hn1FlrWYUc=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		S0ZujNdS4Z0or2VqcWoBzc/k6FE=
+		n9szHlFmV8kgTpVX3apgwOgNZF0=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		EmGtOBAgS6pzkATpwkV6Rm9jzN4=
+		ioYlS7tmGWUfE2DexjZPPkkHrWc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -1228,7 +1228,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			BiuJgJFOMzy0g3mEYN6N/q75dsn/skmiWYTTpzdTErg=
+			WSBgOrO5/exBj4dHTe7+izV1dKEHPW0EufY5qmUIlL8=
 			</data>
 		</dict>
 		<key>Headers/ResearchKitUI.h</key>
@@ -1277,28 +1277,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/F5/ZSzL+WMkhjc1uojiZXcEqfXfqm0ozrdhLoaVFA8=
+			vxaiJDeNNnJxuDsL0BoA2mkH1po1ylmrXOa7LTLCk1g=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			dbvGlmfGJNAZ4IhqkS2kEAq9MUGuaxUrwkux7TuAtMM=
+			805c5M6KKdrp/CxObJQPYy9cRTcGUPpw/rlSZbvuoDY=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			/F5/ZSzL+WMkhjc1uojiZXcEqfXfqm0ozrdhLoaVFA8=
+			vxaiJDeNNnJxuDsL0BoA2mkH1po1ylmrXOa7LTLCk1g=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			SBuM2FgzcWFOrVQ/WkZ8UMonsg/xhB59wIyDGXfa154=
+			EYbTV7SRa2AcC7aPFFkSYVV8Qazmh4lWd0Mxr5gGBD4=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -1312,28 +1312,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			b2ZvPXKzkx1R/qYcPAOCQwvr7LAYhNGrlz78Qv0BfTw=
+			2YFcTdpf3HIPMeeKCCJkLJ+GTG9PeJf61A+WjHzXSoA=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E2MxO3NFZ5HF+8HTqyvYAlZJx0srQP1SPbyTL5HLRYY=
+			Jt0BBnD0ifVaWy062sYUvSfWe6k0v28yU9jPHmG4fz4=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			b2ZvPXKzkx1R/qYcPAOCQwvr7LAYhNGrlz78Qv0BfTw=
+			2YFcTdpf3HIPMeeKCCJkLJ+GTG9PeJf61A+WjHzXSoA=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qT1iS9fLo2VAkr3/6TzoTpvbb8IgXlC5XQJBWPtkL98=
+			3Wb6isFosVd2XL+8N3O+9CdmsaflFpR3Wd4QJbJr+8A=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

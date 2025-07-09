@@ -374,7 +374,7 @@
 		</data>
 		<key>Headers/ResearchKitUI-Swift.h</key>
 		<data>
-		yQijKn7EueB39idZ77vMzcyCwAM=
+		bE1TBPhCTL735I1higYFO5GEs4A=
 		</data>
 		<key>Headers/ResearchKitUI.h</key>
 		<data>
@@ -398,7 +398,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		YKqVdLjErWQbVzMbv/A5AdkRtEg=
+		ugquOJ2Pon721oCIcWcBcCtTzUo=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.abi.json</key>
 		<data>
@@ -406,19 +406,19 @@
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
-		/j9aMGvUEg7NOFbdC81e5bSgP5U=
+		OTK+StyvnGO2INbSktSMcSHlnOA=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftdoc</key>
 		<data>
-		sQ7QxNrqi0JgL7EMujta94Yf4f4=
+		6NLZ/QJRypKDA7NXkS4kF7kGPdw=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftinterface</key>
 		<data>
-		/j9aMGvUEg7NOFbdC81e5bSgP5U=
+		OTK+StyvnGO2INbSktSMcSHlnOA=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		+VbOxB5XI6A8jf1rNqIImXFGPuA=
+		szItt475z9EHL7dy4xOFxmyn1QQ=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
 		<data>
@@ -426,19 +426,19 @@
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
-		oksyRYU4sEWW7cD5LLvF1d+TCqs=
+		kQQ3v82vjcoRfGiG5K2XiK4e7FQ=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftdoc</key>
 		<data>
-		X0826//fNxpzW5gtbcMJ52iu/rw=
+		zvbyq/fhWgjTvv3fQtVEZTIcvqU=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftinterface</key>
 		<data>
-		oksyRYU4sEWW7cD5LLvF1d+TCqs=
+		kQQ3v82vjcoRfGiG5K2XiK4e7FQ=
 		</data>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		SN78+nezi8/MLxPZ7hYOmNIOU5E=
+		wCiuyKEF7Z3IY4Bud6j38UwLRkE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -1228,7 +1228,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			BiuJgJFOMzy0g3mEYN6N/q75dsn/skmiWYTTpzdTErg=
+			WSBgOrO5/exBj4dHTe7+izV1dKEHPW0EufY5qmUIlL8=
 			</data>
 		</dict>
 		<key>Headers/ResearchKitUI.h</key>
@@ -1277,28 +1277,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			JD+Zg5G8IF7ccGRvO+2iiaj/v0u6bkqcblr4FgFcQ98=
+			l6Bh5BcUb9wfc2Oweb6MQ8WI0SIc36+18fCVtbooWxc=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Rmyr+j7oeTGtH/Ghof+5Y1MlBqY41+fIBWgKXNQii38=
+			/7tJwIOat8OxxV2oTDcS9iw83VL9hm1M/6XKZXQgjMg=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JD+Zg5G8IF7ccGRvO+2iiaj/v0u6bkqcblr4FgFcQ98=
+			l6Bh5BcUb9wfc2Oweb6MQ8WI0SIc36+18fCVtbooWxc=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/arm64-apple-xros-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			q2GyBvvHyx/i6P3JsexZOhKpeogLPTUgdHBFyk9Sdw8=
+			0oC56IkuMZH0dj3dsQtlvzLU8VYsVLWrqTusqo1Kqqk=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
@@ -1312,28 +1312,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ig7Rql/uwqSLXHTpJ/99VSfDiKN25IhK3sqIlB/2bZA=
+			49IFvwARTDJMDMZlzv/2rlqjXy4lEXcfCm22eWG+4vc=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			VleVVPCzvOR5iMwjRPI6xNSPhZXFhK5g9ppaxdjN+gs=
+			xAEcc4TvbEfuuLUviWh9DPfuNkByGmBINf2YpOqqxoQ=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ig7Rql/uwqSLXHTpJ/99VSfDiKN25IhK3sqIlB/2bZA=
+			49IFvwARTDJMDMZlzv/2rlqjXy4lEXcfCm22eWG+4vc=
 			</data>
 		</dict>
 		<key>Modules/ResearchKitUI.swiftmodule/x86_64-apple-xros-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			vSuLhGhV9OvY9/dpOEeZdSooFxDVU0OgAWobKG8Ssj8=
+			hKSqeRgCYNYaVgiNXvcYCZhXiY/MrRFnirXH/Ufj9YA=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

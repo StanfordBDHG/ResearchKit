@@ -6,7 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		8CWnMSCJIZmn5V4vs8al0reM+As=
+		lNzz6f/iYGu+AWQs98xfF5cViAQ=
 		</data>
 		<key>Headers/CMMotionActivity+ORKJSONDictionary.h</key>
 		<data>
@@ -326,7 +326,7 @@
 		</data>
 		<key>Headers/ResearchKit-Swift.h</key>
 		<data>
-		4IHrxalguHE1Eung9DrF67f9MY8=
+		CAaNLxYLpylXtKIfGtYjXdR04MU=
 		</data>
 		<key>Headers/ResearchKit.h</key>
 		<data>
@@ -334,7 +334,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		p9vIEdzIWoU6IOKzW20om0GgSCw=
+		WEr2lEk/MAxKiOSuYOB5jkNoFN4=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.abi.json</key>
 		<data>
@@ -342,19 +342,19 @@
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
-		sBacY/BZEiBD9GSfAr8B9w2hUnY=
+		2av+Hj8o6maXoU4d0e5ODhG6J4E=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftdoc</key>
 		<data>
-		WYZf4f0FV9a/SzXaRdgaz/Gc/SI=
+		f1C6YeH1RgpWpbdZ7eq1lkzPzZg=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftinterface</key>
 		<data>
-		sBacY/BZEiBD9GSfAr8B9w2hUnY=
+		2av+Hj8o6maXoU4d0e5ODhG6J4E=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		UvsWePq5ExkAee/pESS0wlIOWZw=
+		VnancgAllupkVpz8QreaImC+fGc=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
 		<data>
@@ -362,19 +362,19 @@
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
-		laXuDwkhmByUAaiQx2IWCpifHn4=
+		uxVyLWWbf2aoTjBi4zeRDT64UYs=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftdoc</key>
 		<data>
-		8lbQooPfUNddcYXnUJr7ISDhutg=
+		Uy2ixXCN+pbqxAZDeLcGIUfwXKE=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftinterface</key>
 		<data>
-		laXuDwkhmByUAaiQx2IWCpifHn4=
+		uxVyLWWbf2aoTjBi4zeRDT64UYs=
 		</data>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		cZH9MeYpb4TL6DVoals3OjWU438=
+		6wZsTHT+scft0oI5JMzLNhOr6Sc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -871,7 +871,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			0NfrsWSxmbVkLIxhGBGaOw3o0u/4J1p+Y0QPUJLIe6o=
+			cz9RIte/uFC8y7+krmNY9rf7Kj/tLaAZ1ApteTJDfTw=
 			</data>
 		</dict>
 		<key>Headers/CMMotionActivity+ORKJSONDictionary.h</key>
@@ -1431,7 +1431,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZCkUCCN/whpk5vQiSTWVqURzqtmQxFE60musMSbZEYc=
+			lr9GlOcWJHd6w5mo1Bl9MgaY7G8mbx3jJccWlJIOKso=
 			</data>
 		</dict>
 		<key>Headers/ResearchKit.h</key>
@@ -1452,28 +1452,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			nOmqeMdFbBVY7bfhLsrIxPc+hlBEiKbj/KdvjNNiyVU=
+			PYEa/dCN9mx28w75tfBAc48M8qs5QGpz9C2SS6/DkPw=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wm9itshpj4DXFkg/MdVA6xPMQhbsebmwNWjAJ80T5cQ=
+			S50hJGzOccZ782Tzh6b2eRDFBpQVQb8Dq1HFwtC5/Bg=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			nOmqeMdFbBVY7bfhLsrIxPc+hlBEiKbj/KdvjNNiyVU=
+			PYEa/dCN9mx28w75tfBAc48M8qs5QGpz9C2SS6/DkPw=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/arm64-apple-xros-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			IWIqnxtFyYG+4VLbIWdQGzB9GHyoq2FWWbBgIFFrdks=
+			OpO9yFXzOIkgYmpiHOOKoY5gOyIpxlM4YshpXFHPcD8=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
@@ -1487,28 +1487,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			N2cmo3rePnI/AtKMbrScieKoNdUGjjCtw8gxMtCNeHo=
+			XmJ7Q6YPU2d0cADhRpP9g7HM7CPsKcb8eq4Fk+Hym4k=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ljpsPaLRKhEefWkihjUDqyRCFtw/6u5sWy1IuKFWEtM=
+			eeR9xFvgD0WYae7HaHSuffyyu3Dqqe+7gYuJoQLkOXM=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			N2cmo3rePnI/AtKMbrScieKoNdUGjjCtw8gxMtCNeHo=
+			XmJ7Q6YPU2d0cADhRpP9g7HM7CPsKcb8eq4Fk+Hym4k=
 			</data>
 		</dict>
 		<key>Modules/ResearchKit.swiftmodule/x86_64-apple-xros-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			WjFgeFNOegazWYJFvux1EMiQPAHuEceQ+3d7lHDuBPc=
+			LIOmnqIhRQzyjwc1s/QSvEXr8s6M64DLJ5qUlF5Ay6E=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
