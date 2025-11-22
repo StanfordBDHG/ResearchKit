@@ -90,17 +90,11 @@
 }
 
 - (void)updateCheckView {
-    if (_checked) {
-        self.image = _checkedImage;
-        if (![self.tintColor isEqual: ORKViewTintColor(self)]) {
-            self.tintColor = ORKViewTintColor(self);
-        }
-    }
-    else {
-        self.image = _uncheckedImage;
-        if (![self.tintColor isEqual: [UIColor systemGray3Color]]) {
-            self.tintColor = _shouldIgnoreDarkMode ? [UIColor lightGrayColor] : [UIColor systemGray3Color];
-        }
+    self.image = _checked ? _checkedImage : _uncheckedImage;
+    // NOTE that we intentionally obtain the superview's tint color here, since we might've set our own to gray already.
+    UIColor *newTintColor = _checked ? ORKViewTintColor(self.superview) : _shouldIgnoreDarkMode ? [UIColor lightGrayColor] : [UIColor systemGray3Color];
+    if (![self.tintColor isEqual:newTintColor]) {
+        self.tintColor = newTintColor;
     }
 }
 
