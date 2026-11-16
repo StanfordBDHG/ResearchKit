@@ -51,6 +51,7 @@
 @implementation ORKReactionTimeViewController {
     ORKReactionTimeContentView *_reactionTimeContentView;
     NSMutableArray *_results;
+    NSMutableArray<ORKFileResult *> *_fileResults;
     NSTimer *_stimulusTimer;
     NSTimer *_timeoutTimer;
     NSTimeInterval _stimulusTimestamp;
@@ -68,6 +69,7 @@ static const NSTimeInterval OutcomeAnimationDuration = 0.3;
     // Do any additional setup after loading the view.
     [self configureTitle];
     _results = [NSMutableArray new];
+    _fileResults = [NSMutableArray new];
     _reactionTimeContentView = [ORKReactionTimeContentView new];
     self.activeStepView.activeCustomView = _reactionTimeContentView;
     [_reactionTimeContentView setStimulusHidden:YES];
@@ -94,12 +96,8 @@ static const NSTimeInterval OutcomeAnimationDuration = 0.3;
 
 #if TARGET_IPHONE_SIMULATOR
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-    if (event.type == UIEventSubtypeMotionShake) {
-        if (_validResult) {
-            ORKReactionTimeResult *reactionTimeResult = [[ORKReactionTimeResult alloc] initWithIdentifier:self.step.identifier];
-            reactionTimeResult.timestamp = _stimulusTimestamp;
-            [_results addObject:reactionTimeResult];
-        }
+    if (event.subtype == UIEventSubtypeMotionShake) {
+        [self recordAttemptResult];
         [self attemptDidFinish];
     }
 }
@@ -126,13 +124,9 @@ static const NSTimeInterval OutcomeAnimationDuration = 0.3;
 
 #pragma mark - ORKRecorderDelegate
 
-- (void)recorder:(ORKRecorder *)recorder didCompleteWithResult:(ORKResult *)result {
-    if (_validResult) {
-        ORKReactionTimeResult *reactionTimeResult = [[ORKReactionTimeResult alloc] initWithIdentifier:self.step.identifier];
-        reactionTimeResult.timestamp = _stimulusTimestamp;
-        reactionTimeResult.fileResult = (ORKFileResult *)result;
-        [_results addObject:reactionTimeResult];
-    }
+- (void)recorder:(ORKRecorder *)recorder didCompleteWithResults:(NSArray<ORKFileResult *> *)results {
+    [_fileResults addObjectsFromArray:results];
+    [self recordAttemptResult];
     [self attemptDidFinish];
 }
 
@@ -156,6 +150,16 @@ static const NSTimeInterval OutcomeAnimationDuration = 0.3;
     NSString *format = ORKLocalizedString(@"REACTION_TIME_TASK_ATTEMPTS_FORMAT", nil);
     NSString *text = [NSString stringWithFormat:format, ORKLocalizedStringFromNumber(@(_results.count + 1)), ORKLocalizedStringFromNumber(@([self reactionTimeStep].numberOfAttempts))];
     [self.activeStepView updateTitle:ORKLocalizedString(@"REACTION_TIME_TASK_ACTIVE_STEP_TITLE", nil) text:text];
+}
+
+- (void)recordAttemptResult {
+    ORKReactionTimeResult *reactionTimeResult = [[ORKReactionTimeResult alloc] initWithIdentifier:self.step.identifier];
+    reactionTimeResult.timestamp = _stimulusTimestamp;
+    reactionTimeResult.isSuccessful = _validResult;
+    reactionTimeResult.fileResults = [_fileResults copy];
+    [_fileResults removeAllObjects];
+    [_results addObject:reactionTimeResult];
+    _stimulusTimestamp = 0;
 }
 
 - (void)attemptDidFinish {
@@ -223,9 +227,11 @@ static const NSTimeInterval OutcomeAnimationDuration = 0.3;
     _validResult = NO;
     _timedOut = YES;
     [self stopRecorders];
-    
+
 #if TARGET_IPHONE_SIMULATOR
-    // Device motion recorder won't work, so manually trigger didfinish
+    // Device motion recorder won't fire on simulator, so drive the result
+    // and completion manually.
+    [self recordAttemptResult];
     [self attemptDidFinish];
 #endif
 }

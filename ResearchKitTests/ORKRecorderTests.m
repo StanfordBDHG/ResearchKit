@@ -166,6 +166,29 @@
 @end
 
 
+// Simulates ORKSpeechRecognitionStepViewController's delegate behavior:
+// calls stop on the recorder when it fails, which is what triggers the recursion.
+@interface ORKReentrantStopDelegate : NSObject <ORKRecorderDelegate>
+@property (nonatomic, weak) ORKRecorder *recorder;
+@property (nonatomic) NSInteger failCallCount;
+@property (nonatomic) NSInteger completeCallCount;
+@end
+
+@implementation ORKReentrantStopDelegate
+
+- (void)recorder:(ORKRecorder *)recorder didCompleteWithResults:(NSArray<ORKFileResult *> *)results {
+    _completeCallCount++;
+    [_recorder stop];
+}
+
+- (void)recorder:(ORKRecorder *)recorder didFailWithError:(NSError *)error {
+    _failCallCount++;
+    [_recorder stop];
+}
+
+@end
+
+
 @interface ORKMockAccelerometerRecorder : ORKAccelerometerRecorder
 
 @property (nonatomic, strong) ORKMockMotionManager* mockManager;
@@ -195,6 +218,10 @@
 
 - (NSTimeInterval)timestamp {
     return 1000.0;
+}
+
+- (NSTimeInterval)timestampSince1970 {
+    return 1200.0;
 }
 
 @end
@@ -291,6 +318,10 @@
     return 1000.0;
 }
 
+- (NSTimeInterval)timestampSince1970 {
+    return 1200.0;
+}
+
 - (CMAttitude *)attitude {
     return [ORKMockAttitude new];
 }
@@ -329,8 +360,9 @@ static BOOL ork_doubleEqual(double x, double y) {
 
 @implementation ORKRecorderTests {
     NSString  *_outputPath;
+    NSNumber *_rollingFileSizeThreshold;
     ORKRecorder *_recorder;
-    ORKResult *_result;
+    NSArray<ORKResult *> *_result;
     NSArray   *_items;
 }
 
@@ -350,7 +382,7 @@ static const NSInteger kNumberOfSamples = 5;
             ORK_Log_Error("Failed to create directory %@", error);
         }
     }
-    
+    _rollingFileSizeThreshold = @5000000;
     _recorder = nil;
     _result = nil;
     _items = nil;
@@ -360,10 +392,10 @@ static const NSInteger kNumberOfSamples = 5;
     [super tearDown];
 }
 
-- (void)recorder:(ORKRecorder *)recorder didCompleteWithResult:(ORKResult *)result {
-     ORK_Log_Debug("didCompleteWithResult: %@", result);
+- (void)recorder:(ORKRecorder *)recorder didCompleteWithResults:(NSArray<ORKFileResult *> *)results {
+    ORK_Log_Debug("didCompleteWithResults: %@", results);
     _recorder = recorder;
-    _result = result;
+    _result = results;
 }
 
 - (void)recorder:(ORKRecorder *)recorder didFailWithError:(NSError *)error {
@@ -373,8 +405,7 @@ static const NSInteger kNumberOfSamples = 5;
 }
 
 - (ORKRecorder *)createRecorder:(ORKRecorderConfiguration *)recorderConfiguration {
-    ORKRecorder *recorder = [recorderConfiguration recorderForStep:[[ORKStep alloc] initWithIdentifier:@"step"]
-                                                   outputDirectory:[NSURL fileURLWithPath:_outputPath]];
+    ORKRecorder *recorder = [recorderConfiguration recorderForStep:[[ORKStep alloc] initWithIdentifier:@"step"]];
     XCTAssert([recorder.identifier isEqualToString:recorderConfiguration.identifier], @"");
     recorder.delegate = self;
     return recorder;
@@ -383,31 +414,37 @@ static const NSInteger kNumberOfSamples = 5;
 - (void)checkResult {
     
     XCTAssertNotNil(_result, @"");
-    XCTAssert([_result isKindOfClass:[ORKFileResult class]], @"");
-    XCTAssert([_recorder.identifier isEqualToString:_result.identifier], @"");
+    XCTAssert([_result isKindOfClass:[NSArray<ORKFileResult *> class]], @"");
     
-    ORKFileResult *fileResult = (ORKFileResult *)_result;
+    for (ORKFileResult *fileResult in _result) {
+        XCTAssert([_recorder.identifier isEqualToString:fileResult.identifier], @"");
+    }
     
-    NSError *error;
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfURL:fileResult.fileURL ] options:(NSJSONReadingOptions)0 error:&error];
-    XCTAssertNil(error, @"");
-    XCTAssertNotNil(dict, @"");
-    
-    NSArray *items = dict[@"items"];
-    XCTAssertEqual(items.count, kNumberOfSamples, @"");
-    
-    _items = items;
+    for (ORKFileResult *fileResult in _result) {
+        NSError *error;
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfURL:fileResult.fileURL ] options:(NSJSONReadingOptions)0 error:&error];
+        XCTAssertNil(error, @"");
+        XCTAssertNotNil(dict, @"");
+        
+        NSArray *items = dict[@"items"];
+        XCTAssertEqual(items.count, kNumberOfSamples, @"");
+        
+        _items = items;
+    }
 }
 
 #if ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION
 - (void)testLocationRecorder {
     
-    ORKLocationRecorder *recorder = (ORKLocationRecorder *)[self createRecorder:[[ORKLocationRecorderConfiguration alloc] initWithIdentifier:@"location"]];
+    ORKLocationRecorder *recorder = (ORKLocationRecorder *)[self createRecorder:[[ORKLocationRecorderConfiguration alloc] initWithIdentifier:@"location"
+                                                                                                                             outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                                                                    rollingFileSizeThreshold:_rollingFileSizeThreshold]];
     XCTAssertTrue([recorder isKindOfClass:[ORKLocationRecorder class]], @"");
     
     recorder = [[ORKMockLocationRecorder alloc] initWithIdentifier:@"location"
                                                               step:recorder.step
-                                                   outputDirectory:recorder.outputDirectory];
+                                                   outputDirectory:recorder.outputDirectory
+                                          rollingFileSizeThreshold:recorder.rollingFileSizeThreshold];
     recorder.delegate = self;
     [recorder start];
     
@@ -473,14 +510,21 @@ static const NSInteger kNumberOfSamples = 5;
 
 - (void)testAccelerometerRecorder {
     
-    ORKAccelerometerRecorderConfiguration *recorderConfiguration = [[ORKAccelerometerRecorderConfiguration alloc] initWithIdentifier:@"accelerometer" frequency:60.0];
+    ORKAccelerometerRecorderConfiguration *recorderConfiguration = [[ORKAccelerometerRecorderConfiguration alloc] initWithIdentifier:@"accelerometer"
+                                                                                                                           frequency:60.0
+                                                                                                                     outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                                                            rollingFileSizeThreshold:_rollingFileSizeThreshold];
     Class recorderClass = [ORKAccelerometerRecorder class];
     ORKAccelerometerRecorder *recorder = (ORKAccelerometerRecorder *)[self createRecorder:recorderConfiguration];
     
     XCTAssertTrue([recorder isKindOfClass:recorderClass], @"");
     XCTAssertTrue([recorder.identifier isEqualToString:recorderConfiguration.identifier], @"");
     
-    ORKMockAccelerometerRecorder *newRecorder = [[ORKMockAccelerometerRecorder alloc] initWithIdentifier:@"accelerometer" frequency:recorder.frequency step:recorder.step outputDirectory:recorder.outputDirectory];
+    ORKMockAccelerometerRecorder *newRecorder = [[ORKMockAccelerometerRecorder alloc] initWithIdentifier:@"accelerometer"
+                                                                                               frequency:recorder.frequency
+                                                                                                    step:recorder.step
+                                                                                         outputDirectory:recorder.outputDirectory
+                                                                                rollingFileSizeThreshold:recorder.rollingFileSizeThreshold];
     
     newRecorder.delegate = self;
     ORKMockMotionManager *manager = [ORKMockMotionManager new];
@@ -509,6 +553,8 @@ static const NSInteger kNumberOfSamples = 5;
     
     for (NSDictionary *sample in _items) {
         XCTAssertTrue(ork_doubleEqual(data.timestamp, ((NSNumber *)sample[@"timestamp"]).doubleValue), @"");
+        XCTAssertTrue(ork_doubleEqual(data.timestampSince1970, ((NSNumber *)sample[@"timestampSince1970"]).doubleValue), @"");
+        
         XCTAssertTrue(ork_doubleEqual(data.acceleration.x, ((NSNumber *)sample[@"x"]).doubleValue), @"");
         XCTAssertTrue(ork_doubleEqual(data.acceleration.y, ((NSNumber *)sample[@"y"]).doubleValue), @"");
         XCTAssertTrue(ork_doubleEqual(data.acceleration.z, ((NSNumber *)sample[@"z"]).doubleValue), @"");
@@ -517,13 +563,20 @@ static const NSInteger kNumberOfSamples = 5;
 
 - (void)testDeviceMotionRecorder {
     
-    ORKDeviceMotionRecorderConfiguration *recorderConfiguration = [[ORKDeviceMotionRecorderConfiguration alloc] initWithIdentifier:@"deviceMotion" frequency:60.0];
+    ORKDeviceMotionRecorderConfiguration *recorderConfiguration = [[ORKDeviceMotionRecorderConfiguration alloc] initWithIdentifier:@"deviceMotion"
+                                                                                                                         frequency:60.0
+                                                                                                                   outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                                                          rollingFileSizeThreshold:_rollingFileSizeThreshold];
     Class recorderClass = [ORKDeviceMotionRecorder class];
     ORKDeviceMotionRecorder *recorder = (ORKDeviceMotionRecorder *)[self createRecorder:recorderConfiguration];
     
     XCTAssertTrue([recorder isKindOfClass:recorderClass], @"");
     
-    recorder = [[ORKMockDeviceMotionRecorder alloc] initWithIdentifier:@"deviceMotion" frequency:recorder.frequency step:recorder.step outputDirectory:recorder.outputDirectory];
+    recorder = [[ORKMockDeviceMotionRecorder alloc] initWithIdentifier:@"deviceMotion"
+                                                             frequency:recorder.frequency
+                                                                  step:recorder.step
+                                                       outputDirectory:recorder.outputDirectory
+                                              rollingFileSizeThreshold:recorder.rollingFileSizeThreshold];
     recorder.delegate = self;
     ORKMockMotionManager *manager = [ORKMockMotionManager new];
     [(ORKMockAccelerometerRecorder*)recorder setMockManager:manager];
@@ -540,6 +593,7 @@ static const NSInteger kNumberOfSamples = 5;
     
     for (NSDictionary *sample in _items) {
         XCTAssertTrue(ork_doubleEqual(motion.timestamp, ((NSNumber *)sample[@"timestamp"]).doubleValue), @"");
+        XCTAssertTrue(ork_doubleEqual(motion.timestampSince1970, ((NSNumber *)sample[@"timestampSince1970"]).doubleValue), @"");
         
         XCTAssertTrue(ork_doubleEqual(motion.attitude.quaternion.x, ((NSNumber *)sample[@"attitude"][@"x"]).doubleValue), @"");
         XCTAssertTrue(ork_doubleEqual(motion.attitude.quaternion.y, ((NSNumber *)sample[@"attitude"][@"y"]).doubleValue), @"");
@@ -568,11 +622,16 @@ static const NSInteger kNumberOfSamples = 5;
 - (void)testPedometerRecorder {
     
     Class recorderClass = [ORKPedometerRecorder class];
-    ORKPedometerRecorder *recorder = (ORKPedometerRecorder *)[self createRecorder:[[ORKPedometerRecorderConfiguration alloc] initWithIdentifier:@"pedometer"]];
+    ORKPedometerRecorder *recorder = (ORKPedometerRecorder *)[self createRecorder:[[ORKPedometerRecorderConfiguration alloc] initWithIdentifier:@"pedometer"
+                                                                                                                                outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                                                                       rollingFileSizeThreshold:_rollingFileSizeThreshold]];
     
     XCTAssertTrue([recorder isKindOfClass:recorderClass], @"");
     
-    recorder = [[ORKMockPedometerRecorder alloc] initWithIdentifier:@"pedometer" step:recorder.step outputDirectory:recorder.outputDirectory];
+    recorder = [[ORKMockPedometerRecorder alloc] initWithIdentifier:@"pedometer"
+                                                               step:recorder.step
+                                                    outputDirectory:recorder.outputDirectory
+                                           rollingFileSizeThreshold:recorder.rollingFileSizeThreshold];
     recorder.delegate = self;
     ORKMockPedometer *pedometer = [ORKMockPedometer new];
     [(ORKMockPedometerRecorder*)recorder setMockPedometer:pedometer];
@@ -602,7 +661,9 @@ static const NSInteger kNumberOfSamples = 5;
 - (void)testTouchRecorder {
     
     Class recorderClass = [ORKTouchRecorder class];
-    ORKTouchRecorder *recorder = (ORKTouchRecorder *)[self createRecorder:[[ORKTouchRecorderConfiguration alloc] initWithIdentifier:@"touch"]];
+    ORKTouchRecorder *recorder = (ORKTouchRecorder *)[self createRecorder:[[ORKTouchRecorderConfiguration alloc] initWithIdentifier:@"touch"
+                                                                                                                    outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                                                           rollingFileSizeThreshold:0]];
     
     XCTAssertTrue([recorder isKindOfClass:recorderClass], @"");
     
@@ -636,8 +697,102 @@ static const NSInteger kNumberOfSamples = 5;
     }
 }
 
+// Verifies that calling stop on a recorder whose delegate re-calls stop (as
+// ORKSpeechRecognitionStepViewController does) does not cause infinite recursion.
+// With no pedometer data collected, stop produces a file result containing {"items": []} and calls
+// didCompleteWithResults: rather than didFailWithError:.
+- (void)testPedometerRecorderStopIsReentrantSafe {
+    ORKMockPedometerRecorder *recorder = [[ORKMockPedometerRecorder alloc] initWithIdentifier:@"pedometer"
+                                                                                         step:[[ORKStep alloc] initWithIdentifier:@"step"]
+                                                                              outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                     rollingFileSizeThreshold:_rollingFileSizeThreshold];
+    ORKMockPedometer *pedometer = [ORKMockPedometer new];
+    recorder.mockPedometer = pedometer;
+
+    ORKReentrantStopDelegate *delegate = [ORKReentrantStopDelegate new];
+    delegate.recorder = recorder;
+    recorder.delegate = delegate;
+
+    [recorder start];
+    // No data injected - simulates no activity. The recorder produces an empty file result.
+    [recorder stop];
+
+    XCTAssertEqual(delegate.completeCallCount, 1, @"didCompleteWithResults: should be called exactly once, not recursively");
+}
+
+- (void)testDeviceMotionRecorderStopIsReentrantSafe {
+    ORKMockDeviceMotionRecorder *recorder = [[ORKMockDeviceMotionRecorder alloc] initWithIdentifier:@"deviceMotion"
+                                                                                          frequency:60.0
+                                                                                               step:[[ORKStep alloc] initWithIdentifier:@"step"]
+                                                                                    outputDirectory:[NSURL fileURLWithPath:_outputPath]
+                                                                           rollingFileSizeThreshold:_rollingFileSizeThreshold];
+    ORKMockMotionManager *manager = [ORKMockMotionManager new];
+    recorder.mockManager = manager;
+
+    ORKReentrantStopDelegate *delegate = [ORKReentrantStopDelegate new];
+    delegate.recorder = recorder;
+    recorder.delegate = delegate;
+
+    [recorder start];
+    // No motion data injected - simulates unavailable hardware or a very brief task.
+    [recorder stop];
+
+    XCTAssertEqual(delegate.failCallCount, 1, @"didFailWithError: should be called exactly once, not recursively");
+}
+
+// Verifies that invalidate stops recording without calling the delegate and
+// deletes any output files that were written during the session.
+- (void)testInvalidateDoesNotCallDelegate {
+    NSURL *outputDirectory = [NSURL fileURLWithPath:[_outputPath stringByAppendingPathComponent:@"testInvalidate"]];
+    [[NSFileManager defaultManager] createDirectoryAtPath:outputDirectory.path withIntermediateDirectories:YES attributes:nil error:nil];
+
+    ORKMockPedometerRecorder *recorder = [[ORKMockPedometerRecorder alloc] initWithIdentifier:@"pedometer"
+                                                                                         step:[[ORKStep alloc] initWithIdentifier:@"step"]
+                                                                              outputDirectory:outputDirectory
+                                                                     rollingFileSizeThreshold:_rollingFileSizeThreshold];
+    ORKMockPedometer *pedometer = [ORKMockPedometer new];
+    recorder.mockPedometer = pedometer;
+
+    ORKReentrantStopDelegate *delegate = [ORKReentrantStopDelegate new];
+    delegate.recorder = recorder;
+    recorder.delegate = delegate;
+
+    [recorder start];
+
+    ORKMockPedometerData *data = [ORKMockPedometerData new];
+    for (NSInteger i = 0; i < kNumberOfSamples; i++) {
+        [pedometer injectData:data];
+    }
+
+    // Collect files written during recording. The logger uses dispatch_sync internally,
+    // so all appended data is on disk before injectData: returns.
+    NSMutableArray<NSURL *> *createdFiles = [NSMutableArray array];
+    NSDirectoryEnumerator<NSURL *> *enumerator = [[NSFileManager defaultManager]
+        enumeratorAtURL:outputDirectory
+        includingPropertiesForKeys:@[NSURLIsRegularFileKey]
+        options:0
+        errorHandler:nil];
+    for (NSURL *url in enumerator) {
+        NSNumber *isRegularFile;
+        [url getResourceValue:&isRegularFile forKey:NSURLIsRegularFileKey error:nil];
+        if (isRegularFile.boolValue) {
+            [createdFiles addObject:url];
+        }
+    }
+    XCTAssertGreaterThan(createdFiles.count, 0, @"files should be written during recording");
+
+    [recorder invalidate];
+
+    XCTAssertEqual(delegate.completeCallCount, 0, @"invalidate should not call didCompleteWithResults:");
+    XCTAssertEqual(delegate.failCallCount, 0, @"invalidate should not call didFailWithError:");
+
+    for (NSURL *fileURL in createdFiles) {
+        XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:fileURL.path],
+                       @"invalidate should delete output files");
+    }
+}
+
 - (void)testAudioRecorder {
-    
     ORKAudioRecorderConfiguration *recorderConfiguration = [[ORKAudioRecorderConfiguration alloc] initWithIdentifier:@"audio" recorderSettings:@{}];
     Class recorderClass = [ORKAudioRecorder class];
     ORKAudioRecorder *recorder = (ORKAudioRecorder *)[self createRecorder:recorderConfiguration];

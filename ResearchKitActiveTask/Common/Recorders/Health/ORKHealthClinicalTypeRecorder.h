@@ -40,9 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  The `ORKHealthClinicalTypeRecorder` class represents a recorder for collecting health records data from HealthKit during
  an active task.
  */
-#if defined(__IPHONE_12_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_12_0
 ORK_CLASS_AVAILABLE
-API_AVAILABLE(ios(12.0))
 @interface ORKHealthClinicalTypeRecorder : ORKRecorder
 
 @property (nonatomic, copy, readonly) HKClinicalType *healthClinicalType;
@@ -56,7 +54,24 @@ API_AVAILABLE(ios(12.0))
  @param healthClinicalType      The HKClinicalType data that should be collected during the active task.
  @param healthFHIRResourceType  The HKFHIRResourceType for the predicate used to query the HKClinicalType.
  @param step                    The step that requested this recorder.
- @param outputDirectory         The directory in which the health records data queried from HealthKit should be stored.
+ 
+ @return An initialized health quantity type recorder.
+ */
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                healthClinicalType:(HKClinicalType *)healthClinicalType
+            healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType
+                              step:(nullable ORKStep *)step;
+
+/**
+ Returns an initialized health clinical type recorder using the specified HKClinicalType and HKFHIRResourceType.
+ 
+ @param identifier              The unique identifier of the recorder (assigned by the recorder configuration).
+ @param healthClinicalType      The HKClinicalType data that should be collected during the active task.
+ @param healthFHIRResourceType  The HKFHIRResourceType for the predicate used to query the HKClinicalType.
+ @param step                    The step that requested this recorder.
+ @param outputDirectory The url to the directory in which all output file data should be written (if producing `ORKFileResult` instances).
+ @param rollingFileSizeThreshold The file-size threshold in bytes used to determine when data is rolled over to multiple files as data is being written.
+ If the value is 0, data is written to only one file and not rolled over to multiple files.
  
  @return An initialized health quantity type recorder.
  */
@@ -64,13 +79,27 @@ API_AVAILABLE(ios(12.0))
                 healthClinicalType:(HKClinicalType *)healthClinicalType
             healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType
                               step:(nullable ORKStep *)step
-                   outputDirectory:(nullable NSURL *)outputDirectory NS_DESIGNATED_INITIALIZER API_AVAILABLE(ios(12.0));
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold NS_DESIGNATED_INITIALIZER;
 
 @end
 
 ORK_CLASS_AVAILABLE
-API_AVAILABLE(ios(12.0))
 @interface ORKHealthClinicalTypeRecorderConfiguration : ORKRecorderConfiguration
+
+/**
+ Returns an initialized health clinical type recorder configuration using the specified clinical type.
+ 
+ @param identifier              The unique identifier of the recorder configuration.
+ @param healthClinicalType      The HKClinicalType that should be collected during the active task.
+ @param healthFHIRResourceType  The HKFHIRResourceType that should be used as predicate while querying for the healthClinicalType.
+ Providing a HKFHIRResourceType that does not correspond to a HKClinicalType will NOT generate any result.
+ 
+ @return An initialized health clinical type recorder configuration.
+ */
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                healthClinicalType:(HKClinicalType *)healthClinicalType
+            healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType;
 
 /**
  Returns an initialized health clinical type recorder configuration using the specified clinical type.
@@ -79,13 +108,19 @@ API_AVAILABLE(ios(12.0))
  
  @param identifier              The unique identifier of the recorder configuration.
  @param healthClinicalType      The HKClinicalType that should be collected during the active task.
- @param healthFHIRResourceType  The HKFHIRResourceType that should be used as predicate while querying for the healthClinicalType. Providing a HKFHIRResourceType that does not correspond to a HKClinicalType will NOT generate any result.
+ @param healthFHIRResourceType  The HKFHIRResourceType that should be used as predicate while querying for the healthClinicalType.
+ Providing a HKFHIRResourceType that does not correspond to a HKClinicalType will NOT generate any result.
+ @param outputDirectory The url to the directory in which all output file data should be written (if producing `ORKFileResult` instances).
+ @param rollingFileSizeThreshold The file-size threshold in bytes used to determine when data is rolled over to multiple files as data is being written.
+ If the value is 0, data is written to only one file and not rolled over to multiple files.
  
  @return An initialized health clinical type recorder configuration.
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier
                 healthClinicalType:(HKClinicalType *)healthClinicalType
-            healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType NS_DESIGNATED_INITIALIZER API_AVAILABLE(ios(12.0));
+            healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold NS_DESIGNATED_INITIALIZER;
 
 /**
  Returns a new health clinical type recorder configuration initialized from data in the given unarchiver.
@@ -107,8 +142,6 @@ API_AVAILABLE(ios(12.0))
 @property (nonatomic, readonly, copy) HKFHIRResourceType healthFHIRResourceType;
 
 @end
-
-#endif
 
 NS_ASSUME_NONNULL_END
 #endif 

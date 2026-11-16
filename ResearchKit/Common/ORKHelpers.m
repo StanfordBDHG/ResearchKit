@@ -29,6 +29,12 @@
  */
 
 
+#import <Foundation/Foundation.h>
+
+#if !TARGET_OS_WATCH
+#import <ResearchKit/ResearchKit-Swift.h>
+#endif
+
 #import "ORKHelpers_Internal.h"
 
 #import "ORKStep.h"
@@ -69,7 +75,7 @@ ORK_INLINE CGFloat ORKAdjustToScale(CGFloat (adjustFunction)(CGFloat), CGFloat v
         static CGFloat screenScale = 1.0;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            screenScale = ScreenScale();
+            screenScale = UITraitCollection.currentSafeDisplayScale;
         });
         scale = screenScale;
     }
@@ -135,6 +141,32 @@ NSString *ORKSignatureStringFromDate(NSDate *date) {
     return [formatter stringFromDate:date];
 }
 
+NSString *ORKHTMLEscapedString(NSString *string) {
+    if (string == nil) {
+        return @"";
+    }
+    NSMutableString *escaped = [string mutableCopy];
+    // Escape the ampersand first so the entities inserted below are not re-escaped.
+    [escaped replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, escaped.length)];
+    [escaped replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, escaped.length)];
+    [escaped replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, escaped.length)];
+    [escaped replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, escaped.length)];
+    [escaped replaceOccurrencesOfString:@"'" withString:@"&#39;" options:NSLiteralSearch range:NSMakeRange(0, escaped.length)];
+    return escaped;
+}
+
+NSString *ORKJavaScriptStringLiteral(NSString *string) {
+    // Turn the string into a safe, quoted JavaScript string by JSON-encoding it. This
+    // escapes quotes, backslashes, and newlines so the value can't break out and run as code.
+    NSData *data = [NSJSONSerialization dataWithJSONObject:(string ?: @"")
+                                                  options:NSJSONWritingFragmentsAllowed
+                                                    error:nil];
+    if (data == nil) {
+        return @"\"\"";
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
 UIColor *ORKRGBA(uint32_t x, CGFloat alpha) {
     CGFloat b = (x & 0xff) / 255.0f; x >>= 8;
     CGFloat g = (x & 0xff) / 255.0f; x >>= 8;
@@ -176,6 +208,32 @@ NSString *ORKFileProtectionFromMode(ORKFileProtectionMode mode) {
     }
     //assert(0);
     return NSFileProtectionNone;
+}
+
+NSDataWritingOptions ORKDataWritingFileProtectionFromMode(ORKFileProtectionMode mode) {
+    switch (mode) {
+        case ORKFileProtectionComplete:
+            return NSDataWritingFileProtectionComplete;
+        case ORKFileProtectionCompleteUnlessOpen:
+            return NSDataWritingFileProtectionCompleteUnlessOpen;
+        case ORKFileProtectionCompleteUntilFirstUserAuthentication:
+            return NSDataWritingFileProtectionCompleteUntilFirstUserAuthentication;
+        case ORKFileProtectionNone:
+            return NSDataWritingFileProtectionNone;
+    }
+    return NSDataWritingFileProtectionNone;
+}
+
+BOOL ORKApplyBackupExclusionToFileURL(NSURL *url) {
+    if (!url) {
+        return NO;
+    }
+    NSError *error = nil;
+    if (![url setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&error]) {
+        ORK_Log_Error("Error excluding %@ from backup: %@", url, error);
+        return NO;
+    }
+    return YES;
 }
 
 #if TARGET_OS_IOS || TARGET_OS_VISION
@@ -427,6 +485,19 @@ UIFont *ORKLightFontWithSize(CGFloat size) {
     return font;
 }
 
+CGFloat ORKDefaultFontSizeForTextStyle(UIFontTextStyle textStyle) {
+#if !TARGET_OS_WATCH
+    static UITraitCollection *defaultSizeTraits;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        defaultSizeTraits = [UITraitCollection traitCollectionWithPreferredContentSizeCategory:UIContentSizeCategoryLarge];
+    });
+    return [UIFont preferredFontForTextStyle:textStyle compatibleWithTraitCollection:defaultSizeTraits].pointSize;
+#else
+    return [UIFont preferredFontForTextStyle:textStyle].pointSize;
+#endif
+}
+
 NSURL *ORKURLFromBookmarkData(NSData *data) {
     if (data == nil) {
         return nil;
@@ -568,3 +639,61 @@ NSNumberFormatter *ORKDecimalNumberFormatter(void) {
     return numberFormatter;
 }
 
+
+static BOOL liquidGlassDisabled = NO;
+
+BOOL ORKLiquidGlassSupportEnabled(void) {
+#if ORK_FEATURE_LIQUID_GLASS_SUPPORT && !TARGET_OS_VISION
+    if (@available(iOS 26.0, *)) {
+        return !liquidGlassDisabled;
+    }
+#endif
+    
+    return NO;
+}
+
+void ORKSetLiquidGlassDisabled(BOOL disabled) {
+    liquidGlassDisabled = disabled;
+}
+
+
+// MARK: - NSPredicate
+         
+NSPredicate* _Nullable ORKPredicateWithFormat(NSString * _Nonnull predicateFormat,
+                                              NSString * _Nonnull callerID) {
+    NSPredicate *predicate;
+    @try {
+        predicate = [NSPredicate predicateWithFormat:predicateFormat];
+    } @catch (NSException *exception) {
+        ORK_Log_Fault(
+            "%{public}@: Error creating predicate from predicateWithFormat string: \
+            '%{public}@' (error: %{public}@)",
+                      callerID,
+                      predicateFormat,
+                      [exception debugDescription]
+                      );
+        predicate = nil;
+    }
+    return predicate;
+}
+
+@implementation NSObject (Helpers)
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+- (void) performIfRespondsToSelector:(SEL)selector {
+    if ([self respondsToSelector:selector]) {
+        [self performSelector:selector];
+    }
+}
+
+- (void) performIfRespondsToSelector:(SEL)selector withObject:(id)object {
+    if ([self respondsToSelector:selector]) {
+        [self performSelector:selector withObject:object];
+    }
+}
+
+#pragma clang diagnostic pop
+
+@end

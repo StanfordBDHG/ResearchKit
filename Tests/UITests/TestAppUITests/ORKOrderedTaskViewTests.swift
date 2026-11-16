@@ -34,8 +34,9 @@ class ORKOrderedTaskViewTests: XCTestCase {
         app.buttons["Next"].tap()
 
         XCTAssert(app.staticTexts["1 of 3"].waitForExistence(timeout: 2.0))
-        XCTAssert(app.buttons["Get Started"].exists)
-        app.buttons["Get Started"].tap()
+        // Since ResearchKit 3.4, the last instruction step before an active step no longer relabels its button to "Get Started".
+        XCTAssert(app.buttons["Next"].exists)
+        app.buttons["Next"].tap()
 
         XCTAssert(app.staticTexts["2 of 3"].waitForExistence(timeout: 2.0))
 

@@ -50,6 +50,7 @@
         self.title = ORKLocalizedString(@"VERIFICATION_STEP_TITLE", nil);
         self.text = text;
         self.showsProgress = NO;
+        self.allowsBackNavigation = NO;
         _verificationViewControllerString = NSStringFromClass(verificationViewControllerClass);
         
         [self validateParameters];
@@ -63,16 +64,20 @@
 
 - (void)validateParameters {
     [super validateParameters];
-    
-    if (!_verificationViewControllerString || !NSClassFromString(_verificationViewControllerString)) {
-        @throw [NSException exceptionWithName:NSGenericException
-                                       reason:@"Unable to find ORKVerificationStepViewController subclass."
+
+    // ORKVerificationStepViewController lives in ResearchKitUI, which depends on this core
+    // module, so we resolve the base class by name at runtime instead of importing it. The
+    // resolved class must be a subclass of it; anything else (including a class that merely
+    // resolves) is rejected to keep attacker-supplied class names off the instantiation path.
+    Class verificationViewControllerClass = NSClassFromString(_verificationViewControllerString);
+    Class baseViewControllerClass = NSClassFromString(@"ORKVerificationStepViewController");
+    if (!verificationViewControllerClass ||
+        !baseViewControllerClass ||
+        ![verificationViewControllerClass isSubclassOfClass:baseViewControllerClass]) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                       reason:@"verificationViewControllerClass must be a subclass of ORKVerificationStepViewController."
                                      userInfo:nil];
     }
-}
-
-- (BOOL)allowsBackNavigation {
-    return NO;
 }
 
 + (BOOL)supportsSecureCoding {
@@ -83,6 +88,7 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         ORK_DECODE_OBJ_CLASS(aDecoder, verificationViewControllerString, NSString);
+        [self validateParameters];
     }
     return self;
 }

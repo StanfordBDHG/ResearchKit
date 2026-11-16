@@ -51,19 +51,19 @@ ORK_EXTERN NSString *const ORKNullStepIdentifier ORK_AVAILABLE_DECL;
  The base object for composing a task.
  
  ``ORKStep`` is the base class for the steps that can compose a task for presentation
- in an  ORKTaskViewController object. Each ``ORKStep`` object represents one logical piece of data
+ in an ORKTaskViewController object. Each ``ORKStep`` object represents one logical piece of data
  entry or activity in a larger task.
  
  A step can be a question, an active test, or a simple instruction. Pair an ``ORKStep``
- subclass with an  ORKStepViewController subclass to display the step.
+ subclass with an ORKStepViewController subclass to display the step.
  
  To use a step, instantiate an ``ORKStep`` object and populate its properties. Add the step to a task,
  such as an ``ORKOrderedTask`` object, then present the task using ORKTaskViewController.
  
  To implement a new type of step, subclass ``ORKStep`` and add your additional
- properties.Then subclass  ORKStepViewController and implement
+ properties.Then subclass ORKStepViewController and implement
  your user interface. If your step is timed, or requires sensor data collection,
- subclass ``ORKActiveStep`` and  ORKActiveStepViewController.
+ subclass ``ORKActiveStep`` and ORKActiveStepViewController.
  */
 
 ORK_CLASS_AVAILABLE API_AVAILABLE(ios(11.0), watchos(6.0))
@@ -135,6 +135,20 @@ ORK_CLASS_AVAILABLE API_AVAILABLE(ios(11.0), watchos(6.0))
 @property (nonatomic, getter=isOptional) BOOL optional;
 
 /**
+ A Boolean value that indicates whether the user can navigate back when this step is reached.
+ 
+ The default value of this property is `YES`. When the value is `NO`, the back button doesn't
+ appear on this step.
+
+ */
+@property (nonatomic, assign) BOOL allowsBackNavigation;
+
+/**
+ The accessibility identifier that XCUITest can use to query for the ORKStep.title's view element.
+ */
+@property (nonatomic, copy, nullable) NSString *accessibilityIdentifier;
+
+/**
  The primary text to display for the step in a localized string.
  */
 @property (nonatomic, copy, nullable) NSString *title;
@@ -161,7 +175,6 @@ ORK_CLASS_AVAILABLE API_AVAILABLE(ios(11.0), watchos(6.0))
  */
 @property (nonatomic) NSTextAlignment headerTextAlignment;
 
-
 /**
  Additional text to display for the step in a localized string at the bottom of the view.
  
@@ -176,6 +189,14 @@ ORK_CLASS_AVAILABLE API_AVAILABLE(ios(11.0), watchos(6.0))
  An optional icon image to show above the title and text.
  */
 @property (nonatomic, copy, nullable) UIImage *iconImage;
+
+/**
+ An optional tint color to apply to the icon image.
+
+ When set, this color will be applied to the `iconImage` when it is displayed.
+ This is useful for tinting SF Symbols or template images.
+ */
+@property (nonatomic, copy, nullable) UIColor *iconImageTintColor;
 
 /**
  A property that gates automatic tint color image changes based on appearance changes.
@@ -237,10 +258,37 @@ ORK_CLASS_AVAILABLE API_AVAILABLE(ios(11.0), watchos(6.0))
 @property (nonatomic, readonly, nullable) NSSet<HKObjectType *> *requestedHealthKitTypesForReading;
 
 /**
+ Returns whether this step is available for presentation on the current device.
+
+ Subclasses can override this method to indicate that the step requires specific hardware
+ capabilities (such as a particular camera type or sensor) that may not be present on all devices.
+ When this method returns `NO`, `ORKOrderedTask` will skip the step during both forward and
+ backward navigation, and the step's view controller will never be instantiated.
+
+ The default implementation returns `YES`.
+ */
+@property (nonatomic, readonly, getter=isStepAvailable) BOOL stepAvailable;
+
+/**
+ An optional array of step identifiers that this step depends on.
+
+ If any step identified by an identifier in this array is unavailable (i.e. its `isStepAvailable`
+ returns `NO`), this step will also be treated as unavailable and skipped during navigation.
+
+ This is useful for contextual steps (such as instruction or transition steps) that are only
+ relevant when a particular hardware-dependent step is present. For example, a "Photo
+ Considerations" instruction step can list the color capture step's identifier here so that
+ it is automatically skipped when the color capture step is unavailable.
+
+ The default value is `nil`.
+ */
+@property (nonatomic, copy, nullable) NSArray<NSString *> *requiredStepIdentifiers;
+
+/**
  Checks the parameters of the step and throws exceptions on invalid parameters.
  
  This method is called when there is a need to validate the step's parameters, which is typically
- the case when adding a step to an  ORKStepViewController object, and when presenting the
+ the case when adding a step to an ORKStepViewController object, and when presenting the
  step view controller.
  
  Subclasses should override this method to provide validation of their additional
@@ -303,7 +351,7 @@ API_AVAILABLE(ios(11))
 /**
  A view controller that positions an image inside an image view that the step uses.
  
- Depending on the subclass of the step,  ORKStepView uses a specific UIImageView, and
+ Depending on the subclass of the step, ORKStepView uses a specific UIImageView, and
  ``imageContentMode`` sets the content mode of used image view.
  */
 

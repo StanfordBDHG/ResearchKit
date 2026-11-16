@@ -38,6 +38,7 @@
 #import "ORKHelpers_Internal.h"
 #import "CMPedometerData+ORKJSONDictionary.h"
 
+#import "ResearchKit/ResearchKit-Swift.h"
 
 @interface ORKPedometerRecorder () {
     ORKDataLogger *_logger;
@@ -52,11 +53,18 @@
 @implementation ORKPedometerRecorder
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
+                              step:(ORKStep *)step {
+    return [self initWithIdentifier:identifier step:step outputDirectory:nil rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
                               step:(ORKStep *)step
-                   outputDirectory:(NSURL *)outputDirectory {
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
     self = [super initWithIdentifier:identifier
                                 step:step
-                     outputDirectory:outputDirectory];
+                     outputDirectory:outputDirectory
+            rollingFileSizeThreshold:rollingFileSizeThreshold];
     if (self) {
         self.continuesInBackground = YES;
     }
@@ -137,19 +145,30 @@
 }
 
 - (void)stop {
-    [self doStopRecording];
-    [_logger finishCurrentLog];
-    
-    NSError *error = nil;
-    __block NSURL *fileUrl = nil;
-    [_logger enumerateLogs:^(NSURL *logFileUrl, BOOL *stop) {
-        fileUrl = logFileUrl;
+    if (_isRecording) {
+        [self doStopRecording];
+        [_logger finishCurrentLog];
+        
+        NSError *error = nil;
+        __block NSMutableArray<NSURL *> *fileUrls = [[NSMutableArray alloc] init];
+        [_logger enumerateLogs:^(NSURL *logFileUrl, BOOL *stop) {
+            [fileUrls addObject:logFileUrl];
+        }
+                         error:&error];
+        
+        /// If no fileUrls are found, write a file with an empty items array to indicate
+        /// that recording ran but no pedometer data was generated.
+        if (fileUrls.count == 0 && !error) {
+            NSURL *emptyFileURL = [_logger currentLogFileURL];
+            NSData *emptyJSON = [@"{\"items\": []}" dataUsingEncoding:NSUTF8StringEncoding];
+            [[NSFileManager defaultManager] createFileAtPath:emptyFileURL.path contents:emptyJSON attributes:nil];
+            [fileUrls addObject:emptyFileURL];
+        }
+
+        [self reportFileResultsWithFiles:fileUrls error:error];
+        
+        [super stop];
     }
-                     error:&error];
-    
-    [self reportFileResultWithFile:fileUrl error:error];
-    
-    [super stop];
 }
 
 - (void)doStopRecording {
@@ -185,13 +204,26 @@
 @implementation ORKPedometerRecorderConfiguration
 
 - (instancetype)initWithIdentifier:(NSString *)identifier {
-    return [super initWithIdentifier:identifier];
+    return [self initWithIdentifier:identifier outputDirectory:nil rollingFileSizeThreshold:0];
 }
 
-- (ORKRecorder *)recorderForStep:(ORKStep *)step outputDirectory:(NSURL *)outputDirectory {
+- (instancetype)initWithIdentifier:(NSString *)identifier outputDirectory:(nullable NSURL *)outputDirectory {
+    return [self initWithIdentifier:identifier outputDirectory:outputDirectory rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
+    return [super initWithIdentifier:identifier
+                     outputDirectory:outputDirectory
+            rollingFileSizeThreshold:rollingFileSizeThreshold];
+}
+
+- (ORKRecorder *)recorderForStep:(ORKStep *)step {
     return [[ORKPedometerRecorder alloc] initWithIdentifier:self.identifier
                                                        step:step
-                                            outputDirectory:outputDirectory];
+                                            outputDirectory:self.outputDirectory
+                                   rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -199,8 +231,18 @@
     return self;
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+}
+
 + (BOOL)supportsSecureCoding {
     return YES;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    return [[ORKPedometerRecorderConfiguration alloc] initWithIdentifier:[self.identifier copy]
+                                                         outputDirectory:[self.outputDirectory copy]
+                                                rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 - (BOOL)isEqual:(id)object {
