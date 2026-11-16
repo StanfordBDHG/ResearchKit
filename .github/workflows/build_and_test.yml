@@ -53,9 +53,10 @@ jobs:
     name: Build and Test iOS
     uses: StanfordBDHG/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
-      runsonlabels: '["macOS", "self-hosted"]'
       # Keep in sync with the Xcode version used by the shared coverage report workflow,
-      # which cannot read result bundles produced by newer Xcode versions.
+      # which cannot read result bundles produced by newer Xcode versions. The self-hosted
+      # runners only have newer Xcode versions; macos-15 has 26.0.1 and an iOS 26.0 simulator.
+      runsonlabels: '["macos-15"]'
       xcodeversion: '26.0.1'
       path: 'Tests/UITests'
       scheme: TestApp
