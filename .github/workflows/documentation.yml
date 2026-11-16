@@ -1,0 +1,33 @@
+#
+# This source file is part of the Stanford Biodesign Digital Health Group open-source organization
+#
+# SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+#
+
+name: Documentation
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    name: Build and Deploy DocC Documentation
+    uses: StanfordBDHG/.github/.github/workflows/docc-github-pages.yml@v2
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    with:
+      scheme: ResearchKit
+      # Pull requests only verify that the documentation builds; pushes to main deploy it.
+      dryrun: ${{ github.event_name == 'pull_request' }}
