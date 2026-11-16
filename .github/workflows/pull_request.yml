@@ -15,4 +15,4 @@ on:
 jobs:
   swiftlint:
     name: SwiftLint
-    uses: ./.github/workflows/swiftlint.yml
+    uses: StanfordBDHG/.github/.github/workflows/swiftlint.yml@v2
