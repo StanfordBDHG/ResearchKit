@@ -55,6 +55,7 @@
 }
 
 - (void)setupContentView {
+    self.scrollContentLayoutMargins = ORKLargeContentLayoutMargins;
     _contentView = [UIView new];
     _contentView.translatesAutoresizingMaskIntoConstraints = NO;
     self.customContentView = _contentView;

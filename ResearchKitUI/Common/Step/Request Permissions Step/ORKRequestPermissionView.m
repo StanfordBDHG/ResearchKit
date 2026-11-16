@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <ResearchKit/ResearchKit-Swift.h>
 #if !TARGET_OS_VISION
 
 #import "ORKRequestPermissionView.h"
@@ -80,6 +81,11 @@ static const CGFloat ButtonWidth = 150;
     [self setBackgroundColor:[UIColor systemBackgroundColor]];
     
     self.clipsToBounds = false;
+
+    [self registerForTraitChanges:@[UITraitPreferredContentSizeCategory.class] withHandler:^(ORKRequestPermissionView *traitChangeView, UITraitCollection *previousTraitCollection) {
+        [traitChangeView updateFonts];
+        traitChangeView->_buttonWidthConstraint.constant = [[UIFontMetrics defaultMetrics] scaledValueForValue:ButtonWidth];
+    }];
     self.layer.cornerRadius = CornerRadius;
 
     [self setupSubviews];
@@ -163,7 +169,7 @@ static const CGFloat ButtonWidth = 150;
         _requestPermissionButton.clipsToBounds = false;
         _requestPermissionButton.layer.cornerRadius =
             CornerRadius -
-            (ContentStackViewBottomPadding / [[UIScreen mainScreen] scale]);
+            (ContentStackViewBottomPadding / self.safeDisplayScale);
     }
 }
 
@@ -173,16 +179,6 @@ static const CGFloat ButtonWidth = 150;
     label.lineBreakMode = NSLineBreakByWordWrapping;
     label.textAlignment = NSTextAlignmentNatural;
     return label;
-}
-
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    [super traitCollectionDidChange:previousTraitCollection];
-    if (previousTraitCollection.preferredContentSizeCategory != self.traitCollection.preferredContentSizeCategory) {
-        [self updateFonts];
-
-        // Scale the button width for the AX size
-        _buttonWidthConstraint.constant = [[UIFontMetrics defaultMetrics] scaledValueForValue:ButtonWidth];
-    }
 }
 
 - (void)updateFonts {

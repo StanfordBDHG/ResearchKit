@@ -124,6 +124,25 @@
     XCTAssertEqualObjects(jsonOut[@"items"][0], jsonObject);
 }
 
+- (void)testJSONFileExtension {
+    NSDictionary *jsonObject = @{@"test": @[@"a", @"b"], @"blah": @(1) };
+
+    [self logJsonObjectAndRolloverAndWaitOnce:jsonObject];
+    [self logJsonObjectAndRolloverAndWaitOnce:jsonObject];
+    [self logJsonObjectAndRolloverAndWaitOnce:jsonObject];
+
+    __block int count = 0;
+
+    [_dataLogger enumerateLogs:^(NSURL *logFileUrl, BOOL *stop) {
+        count ++;
+        NSString *fileExtension = [logFileUrl pathExtension];
+        NSLog(@"%@", fileExtension);
+        XCTAssertEqualObjects(fileExtension, @"json");
+    } error:nil];
+
+    XCTAssertEqual(count, 3);
+}
+
 - (void)testContinuesExistingLog {
     // Test that if you create a logger, and then kill it and create a new logger, the new one
     // continues from the right place without forcing a roll-over
@@ -300,6 +319,26 @@
         XCTAssertEqualObjects(attribs[NSFileProtectionKey], ORKFileProtectionFromMode(_dataLogger.fileProtectionMode));
     }
 #endif
+}
+
+- (void)testBackupExclusionHelper {
+    NSURL *tempDir = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:[NSUUID UUID].UUIDString];
+    [NSFileManager.defaultManager createDirectoryAtURL:tempDir withIntermediateDirectories:YES attributes:nil error:nil];
+
+    NSURL *fileURL = [tempDir URLByAppendingPathComponent:@"test.json"];
+    [@"{}" writeToURL:fileURL atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+    XCTAssertTrue(ORKApplyBackupExclusionToFileURL(fileURL));
+
+    NSNumber *isExcluded = nil;
+    NSError *error = nil;
+    XCTAssertTrue([fileURL getResourceValue:&isExcluded forKey:NSURLIsExcludedFromBackupKey error:&error]);
+    XCTAssertNil(error);
+    XCTAssertEqualObjects(isExcluded, @YES);
+
+    XCTAssertFalse(ORKApplyBackupExclusionToFileURL(nil));
+
+    [NSFileManager.defaultManager removeItemAtURL:tempDir error:nil];
 }
 
 - (void)testFileSizeLimitTriggersRollover {

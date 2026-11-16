@@ -31,6 +31,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <ResearchKit/ResearchKit-Swift.h>
+#import <ResearchKitUI/ResearchKitUI-Swift.h>
 
 #import "ORKScaleSliderView.h"
 
@@ -39,7 +41,6 @@
 #import "ORKScaleRangeLabel.h"
 #import "ORKScaleSlider.h"
 #import "ORKScaleValueLabel.h"
-#import "ORKDontKnowButton.h"
 
 #import "ORKAnswerFormat_Internal.h"
 
@@ -47,16 +48,19 @@
 
 #import "ORKHelpers_Internal.h"
 
-static const CGFloat ValueLabelTopPadding = 16.0;
-static const CGFloat ValueLabelBottomPadding = 20.5;
-static const CGFloat MoveSliderLabelTopPadding = 8.0;
-static const CGFloat MoveSliderLabelBottomPadding = 38.0;
+static const CGFloat TopViewPadding = 16.0;
 static const CGFloat RangeViewHorizontalPadding = 16.0;
 static const CGFloat SliderBottomPadding = 16.0;
-static const CGFloat DontKnowButtonTopBottomPadding = 16.0;
-static const CGFloat DontKnowButtonMaxWidthOffset = 16.0;
+static const CGFloat DontKnowButtonTopBottomPadding = 3.0;
+static const CGFloat RangeDescriptionLabelSpacing = 8.0;
+static const CGFloat DividerSpacing = 8.0;
 static const CGFloat kMargin = 25.0;
 
+// The slider must never lose to anything else in the row, so it sits one below required.
+// Whichever label is arranged inside _topStackView yields next. _moveSliderLabel and
+// _valueLabel are never arranged at the same time, so sharing one tier can't tie them.
+static const UILayoutPriority ORKScaleSliderProtectedPriority = UILayoutPriorityRequired - 1;
+static const UILayoutPriority ORKScaleTopStackViewLabelYieldingPriority = UILayoutPriorityRequired - 2;
 
 // #define LAYOUT_DEBUG 1
 
@@ -91,7 +95,9 @@ static const CGFloat kMargin = 25.0;
         _slider.minimumTrackTintColor = self.tintColor;
         _slider.userInteractionEnabled = YES;
         _slider.contentMode = UIViewContentModeRedraw;
-        self.accessibilityElements = [self.accessibilityElements arrayByAddingObject:_slider];
+        // Protects the slider from collapsing to zero height under space pressure. One shy of
+        // required so a real conflict breaks elsewhere instead of tying two required constraints.
+        [_slider setContentCompressionResistancePriority:ORKScaleSliderProtectedPriority forAxis:UILayoutConstraintAxisVertical];
         [self addSubview:_slider];
         
         _slider.maximumValue = [formatProvider maximumNumber].floatValue;
@@ -151,7 +157,6 @@ static const CGFloat kMargin = 25.0;
                     [self addSubview:_dontKnowBackgroundView];
                     [self addSubview:_dividerView];
                     [self addSubview:_dontKnowButton];
-                    self.accessibilityElements = [self.accessibilityElements arrayByAddingObject:_dontKnowButton];
                 }
             }
             
@@ -170,19 +175,10 @@ static const CGFloat kMargin = 25.0;
             _leftRangeDescriptionLabel.backgroundColor = [UIColor yellowColor];
             _rightRangeDescriptionLabel.backgroundColor = [UIColor yellowColor];
 #endif
-            
-            
-            if (isVertical) {
-                _leftRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
-                _rightRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
-            } else {
-                _leftRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
-                _rightRangeDescriptionLabel.textAlignment = NSTextAlignmentRight;
-            }
-            
-            _leftRangeDescriptionLabel.text = [formatProvider shouldHideLabels] ? @"" : [formatProvider minimumValueDescription];
-            _rightRangeDescriptionLabel.text = [formatProvider shouldHideLabels] ? @"" : [formatProvider maximumValueDescription];
-            
+            [self setRangeDescription:formatProvider.minimumValueDescription inLabel:_leftRangeDescriptionLabel];
+            [self setRangeDescription:formatProvider.maximumValueDescription inLabel:_rightRangeDescriptionLabel];
+            [self setRangeDescriptionLabelsTextAlignmentForSliderOrientation:isVertical];
+
             _moveSliderLabel.translatesAutoresizingMaskIntoConstraints = NO;
             _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
             _leftRangeView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -194,20 +190,63 @@ static const CGFloat kMargin = 25.0;
             _dontKnowButton.translatesAutoresizingMaskIntoConstraints = NO;
             _dividerView.translatesAutoresizingMaskIntoConstraints = NO;
         }
-        
+
+        self.directionalLayoutMargins = ORKLargeContentLayoutMargins;
         self.translatesAutoresizingMaskIntoConstraints = NO;
         _slider.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self setUpConstraints];
+
+        [self registerForTraitChanges:@[UITraitUserInterfaceStyle.class, UITraitPreferredContentSizeCategory.class] withHandler:^(ORKScaleSliderView *traitChangeView, UITraitCollection *previousTraitCollection) {
+            [traitChangeView->_moveSliderLabel invalidateIntrinsicContentSize];
+            [traitChangeView->_valueLabel invalidateIntrinsicContentSize];
+        }];
     }
     return self;
 }
 
+-(void)setRangeDescription:(NSString *)rangeDescription inLabel:(ORKScaleRangeDescriptionLabel *)rangeLabel {
+    if (rangeDescription != nil) {
+        rangeLabel.attributedText = [self rangeDescriptionFromValueDescription:rangeDescription];
+    }
+}
+
+-(NSAttributedString *)rangeDescriptionFromValueDescription:(NSString *)valueDescription {
+    return [self makeRangeDescriptionLabelAttributedTextFromText:[self displayedRangeDescriptionFromText:valueDescription]];
+}
+
+-(NSString *)displayedRangeDescriptionFromText:(NSString *)rangeDescriptionText {
+    return [_formatProvider shouldHideLabels] ? @"" : rangeDescriptionText;
+}
+
+- (NSAttributedString *)makeRangeDescriptionLabelAttributedTextFromText:(nonnull NSString *)rangeDescriptionText {
+    if ([rangeDescriptionText isEqualToString:@""]) {
+        return [[NSAttributedString alloc] initWithString:@""];
+    }
+    
+    return makeHyphenatedAttributedTextFromText(rangeDescriptionText, NSLineBreakByTruncatingTail);
+}
+
+- (void)setRangeDescriptionLabelsTextAlignmentForSliderOrientation:(BOOL)isVertical {
+    if (isVertical) {
+        _leftRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
+        _rightRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
+    } else {
+        _leftRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
+        _rightRangeDescriptionLabel.textAlignment = NSTextAlignmentRight;
+    }
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
-    if (self.frame.size.width > 0 && _dontKnowButton) {
-        [[_dontKnowButton.widthAnchor constraintLessThanOrEqualToConstant:self.frame.size.width - DontKnowButtonMaxWidthOffset] setActive:YES];
+
+    // _moveSliderLabel wraps across multiple lines, so its intrinsic size is ambiguous
+    // without a known width. Keep it in sync with the row's current width so Auto Layout
+    // can derive the wrapped height itself instead of us precomputing it.
+    CGFloat availableWidth = self.frame.size.width - (2 * kMargin);
+    if (availableWidth > 0 && _moveSliderLabel.preferredMaxLayoutWidth != availableWidth) {
+        _moveSliderLabel.preferredMaxLayoutWidth = availableWidth;
+        [_moveSliderLabel invalidateIntrinsicContentSize];
     }
 }
 
@@ -221,7 +260,9 @@ static const CGFloat kMargin = 25.0;
     UIFontDescriptor *moveSliderFontDescriptor = [moveSliderDescriptor fontDescriptorWithSymbolicTraits:(UIFontDescriptorTraitBold)];
     [_moveSliderLabel setFont: [UIFont fontWithDescriptor:moveSliderFontDescriptor size:[[moveSliderFontDescriptor objectForKey: UIFontDescriptorSizeAttribute] doubleValue]]];
     _moveSliderLabel.textColor = [UIColor secondaryLabelColor];
-    
+    // Stays below the slider's protected priority so the slider wins when space is short.
+    [_moveSliderLabel setContentCompressionResistancePriority:ORKScaleTopStackViewLabelYieldingPriority forAxis:UILayoutConstraintAxisVertical];
+
     _valueLabel = [[ORKScaleValueLabel alloc] initWithFrame:CGRectZero];
     _valueLabel.text = @"";
     _valueLabel.textAlignment = NSTextAlignmentCenter;
@@ -229,6 +270,10 @@ static const CGFloat kMargin = 25.0;
     UIFontDescriptor *valueLabelFontDescriptor = [valueLabelDescriptor fontDescriptorWithSymbolicTraits:(UIFontDescriptorTraitBold)];
     [_valueLabel setFont: [UIFont fontWithDescriptor:valueLabelFontDescriptor size:[[valueLabelFontDescriptor objectForKey: UIFontDescriptorSizeAttribute] doubleValue]]];
     [_valueLabel setTextColor:self.tintColor];
+
+    // Stays below the slider's protected priority so the slider wins when space is short.
+    [_valueLabel setContentCompressionResistancePriority:ORKScaleTopStackViewLabelYieldingPriority forAxis:UILayoutConstraintAxisVertical];
+    [_valueLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
 }
 
 - (void)setUpSliderAndRangeLabels {
@@ -256,6 +301,8 @@ static const CGFloat kMargin = 25.0;
         } else {
             leftRangeLabel.text = [_formatProvider localizedStringForNumber:[_formatProvider minimumNumber]];
         }
+        [leftRangeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        [leftRangeLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
         _leftRangeView = leftRangeLabel;
     }
     
@@ -269,7 +316,8 @@ static const CGFloat kMargin = 25.0;
         } else {
             rightRangeLabel.text = [_formatProvider localizedStringForNumber:[_formatProvider maximumNumber]];
         }
-        
+        [rightRangeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        [rightRangeLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
         _rightRangeView = rightRangeLabel;
     }
 }
@@ -279,18 +327,20 @@ static const CGFloat kMargin = 25.0;
     UIFontDescriptor *rangeDescriptionLabelFontDescriptor = [rangeDescriptionLabelDescriptor fontDescriptorWithSymbolicTraits:(UIFontDescriptorTraitBold)];
     
     _leftRangeDescriptionLabel = [[ORKScaleRangeDescriptionLabel alloc] initWithFrame:CGRectZero];
-    _leftRangeDescriptionLabel.numberOfLines = 0;
-    _leftRangeDescriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _leftRangeDescriptionLabel.numberOfLines = 2;
     [_leftRangeDescriptionLabel setFont: [UIFont fontWithDescriptor:rangeDescriptionLabelFontDescriptor size:[[rangeDescriptionLabelFontDescriptor objectForKey: UIFontDescriptorSizeAttribute] doubleValue]]];
     _leftRangeDescriptionLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_leftRangeDescriptionLabel setTextColor:[UIColor labelColor]];
+    _leftRangeDescriptionLabel.adjustsFontSizeToFitWidth = YES;
+    [_leftRangeDescriptionLabel setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
    
     _rightRangeDescriptionLabel = [[ORKScaleRangeDescriptionLabel alloc] initWithFrame:CGRectZero];
-    _rightRangeDescriptionLabel.numberOfLines = 0;
-    _rightRangeDescriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _rightRangeDescriptionLabel.numberOfLines = 2;
     [_rightRangeDescriptionLabel setFont: [UIFont fontWithDescriptor:rangeDescriptionLabelFontDescriptor size:[[rangeDescriptionLabelFontDescriptor objectForKey: UIFontDescriptorSizeAttribute] doubleValue]]];
     _rightRangeDescriptionLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_rightRangeDescriptionLabel setTextColor:[UIColor labelColor]];
+    _rightRangeDescriptionLabel.adjustsFontSizeToFitWidth = YES;
+    [_rightRangeDescriptionLabel setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
 }
 
 - (void)setupDontKnowButton {
@@ -328,11 +378,10 @@ static const CGFloat kMargin = 25.0;
     if (constraints) {
         [NSLayoutConstraint deactivateConstraints:constraints];
     }
-    
+
     constraints = [NSMutableArray new];
     if (isVertical) {
-        _leftRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
-        _rightRangeDescriptionLabel.textAlignment = NSTextAlignmentLeft;
+        [self setRangeDescriptionLabelsTextAlignmentForSliderOrientation:isVertical];
         
         // Vertical slider constraints
         // Keep the thumb the same distance from the value label as in horizontal mode
@@ -532,15 +581,15 @@ static const CGFloat kMargin = 25.0;
                                                                  constant:SideLabelMargin]];
             
             // Limit the height of the descriptionLabels
-            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.rightRangeDescriptionLabel
+            [constraints addObject:[NSLayoutConstraint constraintWithItem:self.rightRangeDescriptionLabel
                                                              attribute:NSLayoutAttributeHeight
                                                              relatedBy:NSLayoutRelationLessThanOrEqual
                                                                 toItem:_slider
                                                              attribute:NSLayoutAttributeHeight
                                                             multiplier:0.5
                                                               constant:SliderMargin]];
-            
-            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.leftRangeDescriptionLabel
+
+            [constraints addObject:[NSLayoutConstraint constraintWithItem:self.leftRangeDescriptionLabel
                                                              attribute:NSLayoutAttributeHeight
                                                              relatedBy:NSLayoutRelationLessThanOrEqual
                                                                 toItem:_slider
@@ -568,57 +617,70 @@ static const CGFloat kMargin = 25.0;
         }
     } else {
         
-        [[_topStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:kMargin] setActive:YES];
-        [[_topStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-kMargin] setActive:YES];
+        [constraints addObject:[_topStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:kMargin]];
+        [constraints addObject:[_topStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-kMargin]];
         
         //Vertical Constraints
-        if (_slider.isWaitingForUserFeedback) {
-            [constraints addObject:[_topStackView.topAnchor constraintEqualToAnchor:self.topAnchor constant:MoveSliderLabelTopPadding]];
-            [constraints addObject:[_slider.topAnchor constraintEqualToAnchor:_topStackView.bottomAnchor constant:MoveSliderLabelBottomPadding]];
-        } else {
-            [constraints addObject:[_topStackView.topAnchor constraintEqualToAnchor:self.topAnchor constant:ValueLabelTopPadding]];
-            [constraints addObject:[_slider.topAnchor constraintEqualToAnchor:_topStackView.bottomAnchor constant:ValueLabelBottomPadding]];
-        }
-        
-        [[_leftRangeDescriptionLabel.topAnchor constraintEqualToAnchor:_slider.bottomAnchor constant:SliderBottomPadding] setActive:YES];
-        [[_rightRangeDescriptionLabel.topAnchor constraintEqualToAnchor:_slider.bottomAnchor constant:SliderBottomPadding] setActive:YES];
-        
+        [constraints addObject:[_topStackView.topAnchor constraintEqualToAnchor:self.topAnchor constant:TopViewPadding]];
+        [constraints addObject:[_slider.topAnchor constraintEqualToAnchor:_topStackView.bottomAnchor constant:TopViewPadding]];
+        // _topStackView has no explicit height constraint: it sizes itself from whichever
+        // label is currently arranged inside it (see setupTopLabels), so self-sizing always
+        // reads a live value instead of a separately cached one that can go stale.
+
+        [constraints addObject:[_leftRangeDescriptionLabel.topAnchor constraintEqualToAnchor:_slider.bottomAnchor constant:SliderBottomPadding]];
+        [constraints addObject:[_rightRangeDescriptionLabel.topAnchor constraintEqualToAnchor:_slider.bottomAnchor constant:SliderBottomPadding]];
+
         //Horizontal constraints for center elements
-        [[_leftRangeView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:kMargin] setActive:YES];
-        [[_rightRangeView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-kMargin] setActive:YES];
-        [[_leftRangeView.centerYAnchor constraintEqualToAnchor:_slider.centerYAnchor] setActive:YES];
-        [[_rightRangeView.centerYAnchor constraintEqualToAnchor:_slider.centerYAnchor] setActive:YES];
-        [[_slider.leadingAnchor constraintEqualToAnchor:_leftRangeView.trailingAnchor constant:RangeViewHorizontalPadding] setActive:YES];
-        [[_slider.trailingAnchor constraintEqualToAnchor:_rightRangeView.leadingAnchor constant:-RangeViewHorizontalPadding] setActive:YES];
+        [constraints addObject:[_leftRangeView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:kMargin]];
+        [constraints addObject:[_rightRangeView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-kMargin]];
+        [constraints addObject:[_leftRangeView.centerYAnchor constraintEqualToAnchor:_slider.centerYAnchor]];
+        [constraints addObject:[_rightRangeView.centerYAnchor constraintEqualToAnchor:_slider.centerYAnchor]];
         
-        //Horizontal constraints for bottom elements
-        [[_leftRangeDescriptionLabel.leadingAnchor constraintEqualToAnchor:_slider.leadingAnchor] setActive:YES];
-        [[_leftRangeDescriptionLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.centerXAnchor] setActive:YES];
-        [[_rightRangeDescriptionLabel.trailingAnchor constraintEqualToAnchor:_slider.trailingAnchor] setActive:YES];
-        [[_rightRangeDescriptionLabel.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.centerXAnchor] setActive:YES];
+        // Set content hugging and compression resistance priorities for range views
+        [_leftRangeView setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+        [_rightRangeView setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+        [_leftRangeView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        [_rightRangeView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
         
-        UILabel *largerDescriptionLabel = _leftRangeDescriptionLabel.text.length >= _rightRangeDescriptionLabel.text.length ? _leftRangeDescriptionLabel : _rightRangeDescriptionLabel;
+        [constraints addObject:[_slider.leadingAnchor constraintEqualToAnchor:_leftRangeView.trailingAnchor constant:RangeViewHorizontalPadding]];
+        [constraints addObject:[_slider.trailingAnchor constraintEqualToAnchor:_rightRangeView.leadingAnchor constant:-RangeViewHorizontalPadding]];
+
+        //Horizontal constraints for bottom elements with fixed spacing
+        [constraints addObject:[_leftRangeDescriptionLabel.leadingAnchor constraintEqualToAnchor:_slider.leadingAnchor]];
+        [constraints addObject:[_rightRangeDescriptionLabel.trailingAnchor constraintEqualToAnchor:_slider.trailingAnchor]];
+
+        // Fixed spacing between the labels
+        [constraints addObject:[_rightRangeDescriptionLabel.leadingAnchor constraintEqualToAnchor:_leftRangeDescriptionLabel.trailingAnchor constant:RangeDescriptionLabelSpacing]];
+
+        // Make both labels equal width for balanced layout
+        [constraints addObject:[_leftRangeDescriptionLabel.widthAnchor constraintEqualToAnchor:_rightRangeDescriptionLabel.widthAnchor]];
         
         //Constraints for dont know button elements
         if ([_formatProvider shouldShowDontKnowButton]) {
-            [[_dontKnowBackgroundView.topAnchor constraintEqualToAnchor:_dividerView.topAnchor] setActive:YES];
-            [[_dontKnowBackgroundView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor] setActive:YES];
-            [[_dontKnowBackgroundView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor] setActive:YES];
-            [[_dontKnowBackgroundView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor] setActive:YES];
+            [constraints addObject:[_dontKnowBackgroundView.topAnchor constraintEqualToAnchor:_dividerView.topAnchor]];
+            [constraints addObject:[_dontKnowBackgroundView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor]];
+            [constraints addObject:[_dontKnowBackgroundView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor]];
+            [constraints addObject:[_dontKnowBackgroundView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor]];
 
-             CGFloat separatorHeight = 1.0 / ScreenScale();
+             CGFloat separatorHeight = 1.0 / self.safeDisplayScale;
 
-            [[_dividerView.leftAnchor constraintEqualToAnchor:self.leftAnchor] setActive:YES];
-            [[_dividerView.rightAnchor constraintEqualToAnchor:self.rightAnchor] setActive:YES];
-            [[_dividerView.heightAnchor constraintEqualToConstant:separatorHeight] setActive:YES];
-            [[_dividerView.topAnchor constraintGreaterThanOrEqualToAnchor: largerDescriptionLabel.bottomAnchor constant:8.0] setActive:YES];
+            [constraints addObject:[_dividerView.leadingAnchor constraintEqualToAnchor:self.layoutMarginsGuide.leadingAnchor]];
+            [constraints addObject:[_dividerView.trailingAnchor constraintEqualToAnchor:self.layoutMarginsGuide.trailingAnchor]];
+            [constraints addObject:[_dividerView.heightAnchor constraintEqualToConstant:separatorHeight]];
 
-            [[_dontKnowButton.topAnchor constraintGreaterThanOrEqualToAnchor:_dividerView.bottomAnchor constant:DontKnowButtonTopBottomPadding] setActive:YES];
-            [[_dontKnowButton.centerXAnchor constraintEqualToAnchor:_dividerView.centerXAnchor] setActive:YES];
-            
-            [[self.bottomAnchor constraintEqualToAnchor:_dontKnowButton.bottomAnchor constant:DontKnowButtonTopBottomPadding] setActive: YES];
+            // Ensure divider view is positioned below both description labels to prevent overlap
+            [constraints addObject:[_dividerView.topAnchor constraintGreaterThanOrEqualToAnchor:_leftRangeDescriptionLabel.bottomAnchor constant:DividerSpacing]];
+            [constraints addObject:[_dividerView.topAnchor constraintGreaterThanOrEqualToAnchor:_rightRangeDescriptionLabel.bottomAnchor constant:DividerSpacing]];
+
+            [constraints addObject:[_dontKnowButton.topAnchor constraintGreaterThanOrEqualToAnchor:_dividerView.bottomAnchor constant:DontKnowButtonTopBottomPadding]];
+            [constraints addObject:[_dontKnowButton.leadingAnchor constraintEqualToAnchor:self.layoutMarginsGuide.leadingAnchor]];
+            [constraints addObject:[_dontKnowButton.trailingAnchor constraintEqualToAnchor:self.layoutMarginsGuide.trailingAnchor]];
+
+            [constraints addObject:[self.bottomAnchor constraintEqualToAnchor:_dontKnowButton.bottomAnchor constant:DontKnowButtonTopBottomPadding]];
         } else {
-            [[self.bottomAnchor constraintEqualToAnchor:largerDescriptionLabel.bottomAnchor constant:8.0] setActive: YES];
+            // When there's no "Don't Know" button, constrain to the bottom of both description labels
+            [constraints addObject:[self.bottomAnchor constraintGreaterThanOrEqualToAnchor:_leftRangeDescriptionLabel.bottomAnchor constant:DividerSpacing]];
+            [constraints addObject:[self.bottomAnchor constraintGreaterThanOrEqualToAnchor:_rightRangeDescriptionLabel.bottomAnchor constant:DividerSpacing]];
         }
         
     }
@@ -699,9 +761,7 @@ static const CGFloat kMargin = 25.0;
     [_moveSliderLabel removeFromSuperview];
     [_topStackView addArrangedSubview:_valueLabel];
      _topStackView.alignment = UIStackViewAlignmentCenter;
-    
-    [NSLayoutConstraint deactivateConstraints:constraints];
-    [constraints removeAllObjects];
+
     [self setUpConstraints];
 }
 
@@ -723,8 +783,6 @@ static const CGFloat kMargin = 25.0;
         [_topStackView addArrangedSubview:_moveSliderLabel];
         _topStackView.alignment = UIStackViewAlignmentLeading;
         
-        [NSLayoutConstraint deactivateConstraints:constraints];
-        [constraints removeAllObjects];
         [self setUpConstraints];
         _slider.value =  [_formatProvider minimumNumber].floatValue;
     }
@@ -735,7 +793,7 @@ static const CGFloat kMargin = 25.0;
 }
 
 - (void)notifyDelegate {
-    
+
     if (self.delegate && [self.delegate respondsToSelector:@selector(scaleSliderViewCurrentValueDidChange:)]) {
         [self.delegate scaleSliderViewCurrentValueDidChange:self];
     }
@@ -795,6 +853,17 @@ static const CGFloat kMargin = 25.0;
 
 - (BOOL)isAccessibilityElement {
     return NO;
+}
+
+- (NSArray *)accessibilityElements {
+    NSMutableArray<UIView *> *accessibilityElements = [[NSMutableArray alloc] init];
+    if (_slider) {
+        [accessibilityElements addObject:_slider];
+    }
+    if (_dontKnowButton) {
+        [accessibilityElements addObject:_dontKnowButton];
+    }
+    return accessibilityElements;
 }
 
 - (NSInteger)accessibilityElementCount {

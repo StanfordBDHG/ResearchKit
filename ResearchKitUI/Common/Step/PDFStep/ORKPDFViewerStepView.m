@@ -39,7 +39,7 @@
 #import "ORKSkin.h"
 
 const CGFloat PDFSearchBarHeight = 40.0;
-const CGFloat PDFActionViewHeight = 25.0;
+const CGFloat PDFActionViewHeight = 30.0;
 const CGFloat PDFActionItemPadding = 1.0;
 const CGFloat PDFThumbnailViewWidth = 60.0;
 const CGFloat PDFActionsViewLeftRightPadding = 20.0;
@@ -74,8 +74,8 @@ NSString * const ORKPDFViewerActionViewClearButtonAccessibilityIdentifier = @"OR
 @property (nonatomic, nonnull) UIButton *annotationActionButton;
 @property (nonatomic, nonnull) UIButton *searchActionButton;
 @property (nonatomic, nonnull) UIButton *shareActionButton;
-@property (nonatomic, nonnull) ORKBorderedButton *clearAnnotationsButton;
-@property (nonatomic, nonnull) ORKBorderedButton *applyAnnotationsButton;
+@property (nonatomic, nonnull) UIButton *clearAnnotationsButton;
+@property (nonatomic, nonnull) UIButton *applyAnnotationsButton;
 @property (nonatomic, nonnull) UIButton *exitAnnotationsButton;
 
 
@@ -173,8 +173,17 @@ NSString * const ORKPDFViewerActionViewClearButtonAccessibilityIdentifier = @"OR
 - (void)setupClearAnnotationsButton {
     if (!_clearAnnotationsButton) {
         _clearAnnotationsButton = [ORKBorderedButton new];
+        if (@available(iOS 26.0, *)) {
+            if (ORKLiquidGlassSupportEnabled()) {
+                _clearAnnotationsButton = [UIButton buttonWithConfiguration:[UIButtonConfiguration prominentGlassButtonConfiguration] primaryAction:nil];
+            }
+        }
     }
-    _clearAnnotationsButton.contentEdgeInsets = (UIEdgeInsets){.left = 6, .right = 6};
+    if (_clearAnnotationsButton.configuration == nil) {
+        UIButtonConfiguration *config = [UIButtonConfiguration plainButtonConfiguration];
+        config.contentInsets = NSDirectionalEdgeInsetsMake(0, 6, 0, 6);
+        _clearAnnotationsButton.configuration = config;
+    }
     _clearAnnotationsButton.translatesAutoresizingMaskIntoConstraints = NO;
     _clearButtonView = [UIView new];
     _clearButtonView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -210,8 +219,17 @@ NSString * const ORKPDFViewerActionViewClearButtonAccessibilityIdentifier = @"OR
 - (void)setupApplyAnnotationsButton {
     if (!_applyAnnotationsButton) {
         _applyAnnotationsButton = [ORKBorderedButton new];
+        if (@available(iOS 26.0, *)) {
+            if (ORKLiquidGlassSupportEnabled()) {
+                _applyAnnotationsButton = [UIButton buttonWithConfiguration:[UIButtonConfiguration prominentGlassButtonConfiguration] primaryAction:nil];
+            }
+        }
     }
-    _applyAnnotationsButton.contentEdgeInsets = (UIEdgeInsets){.left = 6, .right = 6};
+    if (_applyAnnotationsButton.configuration == nil) {
+        UIButtonConfiguration *config = [UIButtonConfiguration plainButtonConfiguration];
+        config.contentInsets = NSDirectionalEdgeInsetsMake(0, 6, 0, 6);
+        _applyAnnotationsButton.configuration = config;
+    }
     _applyAnnotationsButton.translatesAutoresizingMaskIntoConstraints = NO;
     _applyButtonView = [UIView new];
     _applyButtonView.translatesAutoresizingMaskIntoConstraints = NO;

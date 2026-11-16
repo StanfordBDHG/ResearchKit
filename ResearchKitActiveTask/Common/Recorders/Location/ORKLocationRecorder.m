@@ -58,8 +58,18 @@
 
 @implementation ORKLocationRecorder
 
-- (instancetype)initWithIdentifier:(NSString *)identifier step:(ORKStep *)step outputDirectory:(NSURL *)outputDirectory {
-    self = [super initWithIdentifier:identifier step:step outputDirectory:outputDirectory];
+- (instancetype)initWithIdentifier:(NSString *)identifier step:(ORKStep *)step {
+    return [self initWithIdentifier:identifier step:step outputDirectory:nil rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              step:(ORKStep *)step
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
+    self = [super initWithIdentifier:identifier
+                                step:step
+                     outputDirectory:outputDirectory
+            rollingFileSizeThreshold:rollingFileSizeThreshold];
     if (self) {
         self.continuesInBackground = YES;
     }
@@ -99,7 +109,7 @@
     self.locationManager.delegate = self;
 
     BOOL locationManagerAuthRequestsAllowed = YES;
-    if ([CLLocationManager authorizationStatus] <= kCLAuthorizationStatusDenied) {
+    if (self.locationManager.authorizationStatus <= kCLAuthorizationStatusDenied) {
         locationManagerAuthRequestsAllowed = [self.locationManager ork_requestWhenInUseAuthorization];
     }
 
@@ -125,12 +135,13 @@
     
     NSError *error = _recordingError;
     _recordingError = nil;
-    __block NSURL *fileUrl = nil;
+    __block NSMutableArray<NSURL *> *fileUrls = [[NSMutableArray alloc] init];
     [_logger enumerateLogs:^(NSURL *logFileUrl, BOOL *stop) {
-        fileUrl = logFileUrl;
-    } error:&error];
+        [fileUrls addObject:logFileUrl];
+    }
+                     error:&error];
     
-    [self reportFileResultWithFile:fileUrl error:error];
+    [self reportFileResultsWithFiles:fileUrls error:error];
     
     [super stop];
 }
@@ -160,11 +171,11 @@
 
 - (void)finishRecordingWithError:(NSError *)error {
     [self doStopRecording];
-    [super finishRecordingWithError:nil];
+    [super finishRecordingWithError:error];
 }
 
 - (BOOL)isRecording {
-    return [CLLocationManager locationServicesEnabled] && (self.locationManager != nil) && ([CLLocationManager authorizationStatus] > kCLAuthorizationStatusDenied);
+    return [CLLocationManager locationServicesEnabled] && (self.locationManager != nil) && (self.locationManager.authorizationStatus > kCLAuthorizationStatusDenied);
 }
 
 - (void)reset {
@@ -183,16 +194,41 @@
 @implementation ORKLocationRecorderConfiguration
 
 - (instancetype)initWithIdentifier:(NSString *)identifier {
-    return [super initWithIdentifier:identifier];
+    return [self initWithIdentifier:identifier outputDirectory:nil rollingFileSizeThreshold:0];
 }
 
-- (ORKRecorder *)recorderForStep:(ORKStep *)step outputDirectory:(NSURL *)outputDirectory {
-    return [[ORKLocationRecorder alloc] initWithIdentifier:self.identifier step:step outputDirectory:outputDirectory];
+- (instancetype)initWithIdentifier:(NSString *)identifier outputDirectory:(nullable NSURL *)outputDirectory {
+    return [self initWithIdentifier:identifier outputDirectory:outputDirectory rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
+    return [super initWithIdentifier:identifier
+                     outputDirectory:outputDirectory
+            rollingFileSizeThreshold:rollingFileSizeThreshold];
+}
+
+- (ORKRecorder *)recorderForStep:(ORKStep *)step {
+    return [[ORKLocationRecorder alloc] initWithIdentifier:self.identifier
+                                                      step:step
+                                           outputDirectory:self.outputDirectory
+                                  rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    return [[ORKLocationRecorderConfiguration alloc] initWithIdentifier:[self.identifier copy]
+                                                        outputDirectory:[self.outputDirectory copy]
+                                               rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 + (BOOL)supportsSecureCoding {

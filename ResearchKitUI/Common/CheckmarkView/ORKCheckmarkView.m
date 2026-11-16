@@ -91,27 +91,32 @@
 
 - (void)updateCheckView {
     self.image = _checked ? _checkedImage : _uncheckedImage;
-    // NOTE that we intentionally obtain the superview's tint color here, since we might've set our own to gray already.
-    UIColor *newTintColor = _checked ? ORKViewTintColor(self.superview) : _shouldIgnoreDarkMode ? [UIColor lightGrayColor] : [UIColor systemGray3Color];
+    UIColor *newTintColor = _checked ? self.checkedTint : self.uncheckedTint;
     if (![self.tintColor isEqual:newTintColor]) {
         self.tintColor = newTintColor;
     }
 }
 
+- (UIColor *)checkedTint {
+    // NOTE that we intentionally obtain the superview's tint color here, since we might've set our own to gray already.
+    // `ORKViewTintColor` prefers the window's tint color and falls back to the (inherited) tint color of the superview.
+    return self.superview ? ORKViewTintColor(self.superview) : (ORKWindowTintcolor(self.window) ? : [UIColor systemBlueColor]);
+}
+
+- (UIColor *)uncheckedTint {
+    return [UIColor systemGray3Color];
+}
+
 - (void)setupView {
-    [[self.widthAnchor constraintEqualToConstant:_dimension] setActive:YES];
-    [[self.heightAnchor constraintEqualToConstant:_dimension] setActive:YES];
-    
+    [[self.widthAnchor constraintGreaterThanOrEqualToConstant:_dimension] setActive:YES];
+    [[self.heightAnchor constraintGreaterThanOrEqualToConstant:_dimension] setActive:YES];
+
+    [self setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
     self.contentMode = UIViewContentModeCenter;
 }
 
 - (void)setChecked:(BOOL)checked {
     _checked = checked;
-    [self updateCheckView];
-}
-
-- (void)setShouldIgnoreDarkMode:(BOOL)shouldIgnoreDarkMode {
-    _shouldIgnoreDarkMode = shouldIgnoreDarkMode;
     [self updateCheckView];
 }
 
@@ -121,4 +126,3 @@
 }
 
 @end
-

@@ -35,7 +35,7 @@ for medical research or for other research projects.
 
 # Requirements <a name="requirements"></a>
 
-The *ResearchKit framework* codebase supports iOS and requires Xcode 12.0 or newer. The *ResearchKit framework* has a Base SDK version of 13.0.
+The *ResearchKit framework* codebase supports iOS and requires Xcode 16.0 or newer. The *ResearchKit framework* has a Base SDK version of 17.0.
 
 # Documentation <a name="documentation"></a>
 
@@ -47,7 +47,6 @@ View the *ResearchKit framework* documentation by setting ResearchKit as your ta
 # Getting Started <a name="gettingstarted"></a>
 
 * [Website](https://www.researchandcare.org)
-* [WWDC: ResearchKit and CareKit Reimagined](https://developer.apple.com/videos/play/wwdc2019/217/)
 
 
 ### Installation<a name="installation"></a>
@@ -146,7 +145,7 @@ The consent steps are presented in the figure below.
 |---|---|
 | ![consent-welcome-page](https://github.com/ResearchKit/ResearchKit/assets/29615893/e6cbbe07-47ed-4bb4-a84a-f3bf612e9122) | ![consent-before-you-join](https://github.com/ResearchKit/ResearchKit/assets/29615893/687fe345-14d9-4356-9c37-c6a2714875ae) |
 
-Vist the `Obtaining Consent`article in ResearchKit's Documentation for
+Visit the `Obtaining Consent`article in ResearchKit's Documentation for
 more examples that include signature collection and PDF file storage.
 
 # Active Tasks <a name="active-tasks"></a>

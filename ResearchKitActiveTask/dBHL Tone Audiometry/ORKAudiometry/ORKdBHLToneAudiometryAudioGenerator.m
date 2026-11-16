@@ -57,9 +57,13 @@
 
 typedef NSString * ORKVolumeCurveFilename NS_STRING_ENUM;
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPods = @"volume_curve_AIRPODS";
+ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsGen2 = @"volume_curve_AIRPODSV2";
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsGen3 = @"volume_curve_AIRPODSV3";
+ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsGen4E = @"volume_curve_AIRPODSV4E";
+ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsGen4M = @"volume_curve_AIRPODSV4M";
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsPro = @"volume_curve_AIRPODSPRO";
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsProGen2 = @"volume_curve_AIRPODSPROV2";
+ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsProGen3 = @"volume_curve_AIRPODSPROV3";
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameAirPodsMax = @"volume_curve_AIRPODSMAX";
 ORKVolumeCurveFilename const ORKVolumeCurveFilenameWired = @"volume_curve_WIRED";
 
@@ -188,20 +192,34 @@ static OSStatus ORKdBHLAudioGeneratorZeroTone(void *inRefCon,
         ORKHeadphoneTypeIdentifier headphoneTypeIdentifier;
         ORKVolumeCurveFilename volumeCurveFilename;
         
-        if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen1] ||
-            [headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen2]) {
+        if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen1]) {
             headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPods;
             volumeCurveFilename = ORKVolumeCurveFilenameAirPods;
+        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen2]) {
+            headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsGen2;
+            volumeCurveFilename = ORKVolumeCurveFilenameAirPodsGen2;
         } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen3]) {
             headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsGen3;
             volumeCurveFilename = ORKVolumeCurveFilenameAirPodsGen3;
+        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen4E] ||
+                   [headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen4CHE]) {
+            headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsGen4E;
+            volumeCurveFilename = ORKVolumeCurveFilenameAirPodsGen4E;
+        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen4M] ||
+                   [headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsGen4CHM]) {
+            headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsGen4M;
+            volumeCurveFilename = ORKVolumeCurveFilenameAirPodsGen4M;
         } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsPro]) {
             headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsPro;
             volumeCurveFilename = ORKVolumeCurveFilenameAirPodsPro;
         } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsProGen2]) {
             headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsProGen2;
             volumeCurveFilename = ORKVolumeCurveFilenameAirPodsProGen2;
-        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsMax]) {
+        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsProGen3]) {
+            headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsProGen3;
+            volumeCurveFilename = ORKVolumeCurveFilenameAirPodsProGen3;
+        } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsMax] ||
+                   [headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierAirPodsMaxUSBC]) {
             headphoneTypeIdentifier = ORKHeadphoneTypeIdentifierAirPodsMax;
             volumeCurveFilename = ORKVolumeCurveFilenameAirPodsMax;
         } else if ([headphoneTypeUppercased isEqualToString:ORKHeadphoneTypeIdentifierEarPods]) {

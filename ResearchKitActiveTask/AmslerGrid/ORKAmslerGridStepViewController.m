@@ -44,6 +44,15 @@
 #import "ORKResult_Private.h"
 #import "ORKCollectionResult_Private.h"
 
+#import <ResearchKit/ORKFileResult.h>
+
+
+NSString * const DRAWING_PATH_FILE_RESULT_IDENTIFIER = @"DrawingPathFileResultIdentifier";
+NSString * const FILE_URL_CREATION_ERROR = @"Failed to generate a fileURL for the amsler grid result image.";
+NSString * const IMAGE_EXTENSION = @"png";
+NSString * const IMAGE_FILE_RESULT_IDENTIFIER = @"ImageFileResultIdentifier";
+NSString * const PATHS_EXTENSION = @"dat";
+NSString * const PATHS_ARRAY_STORAGE_ERROR = @"Failed to store paths array to file.";
 
 @interface ORKAmslerGridStepViewController () {
     ORKFreehandDrawingView *_freehandDrawingView;
@@ -52,7 +61,10 @@
 
 @end
 
-@implementation ORKAmslerGridStepViewController
+@implementation ORKAmslerGridStepViewController {
+    NSURL *_fileURL;
+    NSURL *_pathsURL;
+}
 
 - (instancetype)initWithStep:(ORKStep *)step {
     self = [super initWithStep:step];
@@ -74,11 +86,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
     self.view.backgroundColor = [UIColor blackColor];
     _amslerGridView = [ORKAmslerGridContentView new];
     _amslerGridView.translatesAutoresizingMaskIntoConstraints = NO;
     self.activeStepView.activeCustomView = _amslerGridView;
-    [self.activeStepView removeCustomContentPadding];
     
     _freehandDrawingView = [ORKFreehandDrawingView new];
 
@@ -87,10 +99,9 @@
     _freehandDrawingView.opaque = NO;
 
     [_amslerGridView addSubview:_freehandDrawingView];
-   
-    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
-    [self.activeStepView addGestureRecognizer:panGestureRecognizer];
-    
+
+    _navigationFooterView.continueEnabled = YES;
+
     self.activeStepView.isAccessibilityElement = YES;
     self.activeStepView.accessibilityLabel = ORKLocalizedString(@"AX_AMSLER_GRID_LABEL", nil);
     self.activeStepView.accessibilityHint = ORKLocalizedString(@"AX_AMSLER_GRID_HINT", nil);
@@ -98,10 +109,19 @@
     [self setupContraints];
 }
 
-- (void)handlePanGesture:(UIPanGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateChanged) {
-        [self finish];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    /// The ActiveSteViewController calls [self start] if shouldStartTimerAutomatically is true.
+    /// If shouldStartTimerAutomatically is false, we call it ourselves to make sure any provided recorders begin collection.
+    if (!((ORKAmslerGridStep *)self.step).shouldStartTimerAutomatically && !self.started) {
+        [self start];
     }
+}
+
+- (void)goForward {
+    [self finish];
+    [super goForward];
 }
 
 - (void)setupContraints {
@@ -154,8 +174,38 @@
     
     if (_freehandDrawingView.freehandDrawingExists) {
         UIImage *image = [self getImage];
-        ORKAmslerGridResult *amslerGridResult = [[ORKAmslerGridResult alloc] initWithIdentifier:self.step.identifier image:image path:_freehandDrawingView.freehandDrawingPath eyeSide: [self amslerGridStep].eyeSide];
-        parentResult.results = @[amslerGridResult];
+        
+        NSError *error = nil;
+        NSData *data = UIImagePNGRepresentation(image);
+        _fileURL = [self _writeCapturedDataWithFileName:self.step.identifier data:data error:&error];
+        _pathsURL = [self _writePathDataWithFileName:self.step.identifier path:_freehandDrawingView.freehandDrawingPath];
+        
+        if (error) {
+            @throw [NSException exceptionWithName:NSFileHandleOperationException
+                                           reason:FILE_URL_CREATION_ERROR
+                                         userInfo:nil];
+        }
+        
+        // construct the imageFileResult
+        ORKFileResult *imageFileResult = [[ORKFileResult alloc] initWithIdentifier:IMAGE_FILE_RESULT_IDENTIFIER];
+        imageFileResult.fileURL = _fileURL;
+        imageFileResult.fileName = [_fileURL lastPathComponent];
+        imageFileResult.contentType =  [NSString stringWithFormat:@"image/%@", IMAGE_EXTENSION];
+        
+        // construct the drawingPathFileResult
+        ORKFileResult *drawingPathFileResult = [[ORKFileResult alloc] initWithIdentifier:DRAWING_PATH_FILE_RESULT_IDENTIFIER];
+        drawingPathFileResult.fileURL = _pathsURL;
+        drawingPathFileResult.fileName = [_pathsURL lastPathComponent];
+        imageFileResult.contentType =  @"application/octet-stream";
+        
+        // construct the ORKAmslerGridResult
+        ORKAmslerGridResult *amslerGridResult = [[ORKAmslerGridResult alloc] initWithIdentifier:self.step.identifier];
+        amslerGridResult.path = _freehandDrawingView.freehandDrawingPath;
+        amslerGridResult.eyeSide = [self amslerGridStep].eyeSide;
+        amslerGridResult.imageFileResult = imageFileResult;
+        amslerGridResult.drawingPathFileResult = drawingPathFileResult;
+        
+        parentResult.results = [parentResult.results arrayByAddingObject:amslerGridResult] ? : @[amslerGridResult];
     }
 
     return parentResult;
@@ -175,6 +225,60 @@
     UIGraphicsEndImageContext();
     
     return image;
+}
+
+- (NSURL *)_writeCapturedDataWithFileName:(NSString *)fileName data:(NSData *)data error:(NSError **)errorOut {
+    NSURL *URL = [[self.outputDirectory URLByAppendingPathComponent:fileName] URLByAppendingPathExtension:IMAGE_EXTENSION];
+    
+    // Confirm the outputDirectory was set properly
+    if (!URL) {
+        if (errorOut == NULL) {
+            *errorOut = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteInvalidFileNameError userInfo:@{NSLocalizedDescriptionKey:ORKLocalizedString(@"CAPTURE_ERROR_NO_OUTPUT_DIRECTORY", nil)}];
+        }
+        return nil;
+    }
+    
+    // If set properly, the outputDirectory is already created, so write the file into it
+    NSError *writeError = nil;
+    if (![data writeToURL:URL options:NSDataWritingAtomic|ORKDataWritingFileProtectionFromMode(self.fileProtectionMode) error:&writeError]) {
+        if (writeError) {
+            ORK_Log_Error("%@", writeError);
+        }
+        
+        if (errorOut == NULL) {
+            *errorOut = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteInvalidFileNameError userInfo:@{NSLocalizedDescriptionKey:ORKLocalizedString(@"CAPTURE_ERROR_CANNOT_WRITE_FILE", nil)}];
+        }
+        return nil;
+    }
+    
+    return URL;
+}
+
+- (NSURL *)_writePathDataWithFileName:(NSString *)fileName path:(NSArray<UIBezierPath *> *)paths {
+    NSError *error = nil;
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:paths
+                                         requiringSecureCoding:NO
+                                                         error:&error];
+
+    if (error) {
+        [self _throwPathStorageError];
+    }
+    
+    NSURL *URL = [[self.outputDirectory URLByAppendingPathComponent:fileName] URLByAppendingPathExtension:PATHS_EXTENSION];
+    NSError *writeError = nil;
+    BOOL success = [data writeToURL:URL options:NSDataWritingAtomic|ORKDataWritingFileProtectionFromMode(self.fileProtectionMode) error:&writeError];
+    
+    if (!success) {
+        [self _throwPathStorageError];
+    }
+    
+    return URL;
+}
+
+- (void)_throwPathStorageError {
+    @throw [NSException exceptionWithName:NSFileHandleOperationException
+                                   reason:PATHS_ARRAY_STORAGE_ERROR
+                                 userInfo:nil];
 }
 
 @end

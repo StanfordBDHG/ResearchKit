@@ -39,9 +39,24 @@ ORK_CLASS_AVAILABLE
 @interface ORKEnvironmentSPLMeterStep : ORKActiveStep
 
 /**
+ The upper bound for `thresholdValue`. Equal to 120.0 dBSPL-A.
+ */
+@property (class, nonatomic, readonly) double maximumThresholdValue;
+
+/**
  The maximum permissible value for the environment sound pressure level in dBA.
  */
 @property (nonatomic, assign) double thresholdValue;
+
+/**
+ The upper bound for `samplingInterval`. Equal to 3600.0 seconds (1 hour).
+ */
+@property (class, nonatomic, readonly) NSTimeInterval maximumSamplingInterval;
+
+/**
+ The lower bound for `samplingInterval`. Equal to 1.0 second.
+ */
+@property (class, nonatomic, readonly) NSTimeInterval minimumSamplingInterval;
 
 /**
  The rate at which the `AVAudioPCMBuffer` is queried and A-weighted filter is applied.
@@ -49,9 +64,16 @@ ORK_CLASS_AVAILABLE
 @property (nonatomic, assign) NSTimeInterval samplingInterval;
 
 /**
+ The upper bound for `requiredContiguousSamples`. Equal to 1000.
+ */
+@property (class, nonatomic, readonly) NSInteger maximumRequiredContiguousSamples;
+
+/**
  The number of consecutive samples less than threshold value required for the step to proceed.
  */
 @property (nonatomic, assign) NSInteger requiredContiguousSamples;
+
+- (instancetype)initWithIdentifier:(NSString *)identifier outputDirectory:(nullable NSURL *)outputDirectory;
 
 @end
 

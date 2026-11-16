@@ -30,8 +30,6 @@
 
 #import <Availability.h>
 
-#if defined(__IPHONE_12_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_12_0
-
 #import <ResearchKit/HKSample+ORKJSONDictionary.h>
 #import "ORKHealthClinicalTypeRecorder.h"
 #import "ORKHelpers_Internal.h"
@@ -54,11 +52,25 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier
                 healthClinicalType:(HKClinicalType *)healthClinicalType
             healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType
+                              step:(ORKStep *)step {
+    return [self initWithIdentifier:identifier
+                 healthClinicalType:healthClinicalType
+             healthFHIRResourceType:healthFHIRResourceType
+                               step:step
+                    outputDirectory:nil
+           rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                healthClinicalType:(HKClinicalType *)healthClinicalType
+            healthFHIRResourceType:(HKFHIRResourceType)healthFHIRResourceType
                               step:(ORKStep *)step
-                   outputDirectory:(NSURL *)outputDirectory {
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
     self = [super initWithIdentifier:identifier
                                 step:step
-                     outputDirectory:outputDirectory];
+                     outputDirectory:outputDirectory
+            rollingFileSizeThreshold:rollingFileSizeThreshold];
     if (self) {
         NSParameterAssert(healthClinicalType != nil);
         _healthClinicalType = healthClinicalType;
@@ -133,12 +145,13 @@
     [_logger finishCurrentLog];
     
     NSError *error = nil;
-    __block NSURL *fileUrl = nil;
+    __block NSMutableArray<NSURL *> *fileUrls = [[NSMutableArray alloc] init];
     [_logger enumerateLogs:^(NSURL *logFileUrl, BOOL *stop) {
-        fileUrl = logFileUrl;
-    } error:&error];
+        [fileUrls addObject:logFileUrl];
+    }
+                     error:&error];
     
-    [self reportFileResultWithFile:fileUrl error:error];
+    [self reportFileResultsWithFiles:fileUrls error:error];
     
     [super stop];
 }
@@ -182,7 +195,19 @@
 - (instancetype)initWithIdentifier:(NSString *)identifier
                 healthClinicalType:(HKClinicalType *)healthClinicalType
             healthFHIRResourceType:(nullable HKFHIRResourceType)healthFHIRResourceType {
-    self = [super initWithIdentifier:identifier];
+    return [self initWithIdentifier:identifier
+                 healthClinicalType:healthClinicalType
+             healthFHIRResourceType:healthFHIRResourceType
+                    outputDirectory:nil
+           rollingFileSizeThreshold:0];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                healthClinicalType:(HKClinicalType *)healthClinicalType
+            healthFHIRResourceType:(HKFHIRResourceType)healthFHIRResourceType
+                   outputDirectory:(nullable NSURL *)outputDirectory
+          rollingFileSizeThreshold:(size_t)rollingFileSizeThreshold {
+    self = [super initWithIdentifier:identifier outputDirectory:outputDirectory rollingFileSizeThreshold:rollingFileSizeThreshold];
     if (self) {
         NSParameterAssert(healthClinicalType != nil);
         _healthClinicalType = healthClinicalType;
@@ -192,13 +217,13 @@
 }
 #pragma clang diagnostic pop
 
-- (ORKRecorder *)recorderForStep:(ORKStep *)step
-                 outputDirectory:(NSURL *)outputDirectory {
+- (ORKRecorder *)recorderForStep:(ORKStep *)step {
     return [[ORKHealthClinicalTypeRecorder alloc] initWithIdentifier:self.identifier
                                                   healthClinicalType:_healthClinicalType
                                               healthFHIRResourceType:_healthFHIRResourceType
                                                                 step:step
-                                                     outputDirectory:outputDirectory];
+                                                     outputDirectory:self.outputDirectory
+                                            rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -211,12 +236,21 @@
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
     ORK_ENCODE_OBJ(aCoder, healthClinicalType);
     ORK_ENCODE_OBJ(aCoder, healthFHIRResourceType);
 }
 
 + (BOOL)supportsSecureCoding {
     return YES;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    return [[ORKHealthClinicalTypeRecorderConfiguration alloc] initWithIdentifier:[self.identifier copy]
+                                                               healthClinicalType:[_healthClinicalType copy]
+                                                           healthFHIRResourceType:[_healthFHIRResourceType copy]
+                                                                  outputDirectory:[self.outputDirectory copy]
+                                                         rollingFileSizeThreshold:self.rollingFileSizeThreshold];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -233,5 +267,4 @@
 }
 
 @end
-#endif
 #endif 

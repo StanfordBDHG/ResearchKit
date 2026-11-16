@@ -11,6 +11,11 @@ PRODUCT_BUNDLE_IDENTIFIER = org.researchkit.$(PRODUCT_NAME:rfc1034identifier)
 PRODUCT_NAME = $(TARGET_NAME)
 SWIFT_VERSION = 5.0
 
+// The test bundle is not shipped, so it uses the default Objective-C interoperability instead of the project-wide
+// C++ interoperability (`objcxx`). With C++ interoperability enabled, Objective-C exceptions that propagate through
+// Swift frames trap, which breaks the tests that assert on exceptions thrown by invalid ResearchKit initializers.
+SWIFT_OBJC_INTEROP_MODE = objc
+
 // Control whether ResearchKitTests expect CLLocationManager calls requesting authorization for location
 // ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION=0 compiles out the feature
 // ORK_FEATURE_CLLOCATIONMANAGER_AUTHORIZATION=1 compiles RK with the feature intact

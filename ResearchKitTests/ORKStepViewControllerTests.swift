@@ -100,13 +100,13 @@ class ORKStepViewControllerTests: XCTestCase {
         }
         
         XCTAssertEqual(testController.continueButtonItem, testController.internalContinueButtonItem)
-        XCTAssertEqual(testController.backButtonItem, nil)
+        XCTAssertTrue(testController.navigationItem.leftBarButtonItem?.action == #selector(testController.popFromNavigationStack))
         
         testController.delegate = nil
         testController.viewWillAppear(false)
 
         XCTAssertEqual(testController.continueButtonItem, testController.internalDoneButtonItem)
-        XCTAssertEqual(testController.backButtonItem, nil)
+        XCTAssertTrue(testController.navigationItem.leftBarButtonItem?.action == #selector(testController.popFromNavigationStack))
         XCTAssertEqual(testController.hasBeenPresented, true)
         XCTAssert(testController.presentedDate != nil)
         XCTAssertNil(testController.dismissedDate)
@@ -216,7 +216,6 @@ class ORKStepViewControllerTests: XCTestCase {
         }
     }
     
-    #if TARGET_OS_IOS
     func testViewDelegates() {
         failExpectation = expectation(description: "ORKStepViewController notifies delegate it did fail")
         testController.delegate?.stepViewControllerDidFail(testController, withError: nil)
@@ -228,7 +227,7 @@ class ORKStepViewControllerTests: XCTestCase {
         }
         
         recorderExpectation = expectation(description: "ORKStepViewController notifies delegate that it's recorder failed")
-        let recorder = ORKRecorder(identifier: "RECORDER", step: nil, outputDirectory: nil)
+        let recorder = ORKRecorder(identifier: "RECORDER", step: nil)
         testController!.delegate!.stepViewController(testController, recorder: recorder, didFailWithError: TestError.recorderError)
         
         waitForExpectations(timeout: 10) { (error) in
@@ -238,7 +237,6 @@ class ORKStepViewControllerTests: XCTestCase {
         }
         
     }
-    #endif
 }
 
 extension ORKStepViewControllerTests: ORKStepViewControllerDelegate {
